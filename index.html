@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Le creazioni di Dania — Cucito fatto a mano</title>
   <meta name="description" content="Prodotti di cucito fatti a mano: accessori, pochette, organizer e idee regalo personalizzate." />
+  <meta name="theme-color" content="#c24d3c" />
   <link rel="icon" href="logo.jpg" type="image/jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Open Graph / SEO base -->
+  <meta property="og:title" content="Le creazioni di Dania — Cucito fatto a mano" />
+  <meta property="og:description" content="Pochette, organizer e accessori in tessuto. Personalizzazioni con nome ricamato." />
+  <meta property="og:image" content="logo.jpg" />
+  <meta property="og:type" content="website" />
   <style>
     :root{--maxw:1100px;--c1:#222;--c2:#555;--brand:#c24d3c;--brand2:#ffe6dc;--bg:#faf8fb}
     *{box-sizing:border-box}
@@ -19,6 +25,7 @@
     .wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
     .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
     .brand{display:flex;gap:10px;align-items:center}
+    .brand-name{font-weight:700;color:var(--brand)}
     nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
     nav a{color:var(--c1);font-weight:500}
     .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--brand);color:white;background:var(--brand);transition:.2s}
@@ -42,6 +49,11 @@
     .legal{font-size:12px;color:#777}
     .notice{position:fixed;inset:auto 12px 12px 12px;background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 16px rgba(0,0,0,.05)}
     .notice button{margin-left:auto}
+    .toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:10px 0}
+    .search{flex:1}
+    .search input{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px}
+    .sr-only{position:absolute;left:-9999px}
+    .empty{padding:14px;border:1px dashed #ddd;border-radius:12px;text-align:center;color:#777}
     @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.footercols{grid-template-columns:1fr 1fr}}
     @media (max-width:600px){.grid{grid-template-columns:1fr}}
   </style>
@@ -49,14 +61,14 @@
 <body>
   <header>
     <div class="wrap topbar">
-      <div class="brand">
-        <img src="logo.jpg" alt="Le creazioni di Dania" style="height:50px;border-radius:8px;object-fit:cover"/>
+      <a class="brand" href="#" aria-label="Homepage">
+        <img src="logo.jpg" alt="Logo Le creazioni di Dania" style="height:50px;border-radius:8px;object-fit:cover" loading="lazy"/>
         <div>
-          <div style="font-weight:700;color:var(--brand)">Le creazioni di Dania</div>
+          <div class="brand-name">Le creazioni di Dania</div>
           <div style="font-size:12px;color:#7a7a7a">Cucito fatto a mano</div>
         </div>
-      </div>
-      <nav>
+      </a>
+      <nav aria-label="Principale">
         <ul>
           <li><a href="#prodotti">Prodotti</a></li>
           <li><a href="#personalizza">Personalizza</a></li>
@@ -79,13 +91,20 @@
         <a href="#prodotti" class="btn">Scopri i prodotti</a>
       </div>
       <div>
-        <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop" alt="Set da cucito artigianale" />
+        <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop" alt="Set da cucito artigianale" loading="lazy"/>
       </div>
     </section>
 
-    <section id="prodotti" class="section">
-      <h2>In vetrina</h2>
-      <div class="grid" id="product-grid"></div>
+    <section id="prodotti" class="section" aria-labelledby="prodotti-title">
+      <div class="toolbar">
+        <h2 id="prodotti-title">In vetrina</h2>
+        <div class="search" role="search">
+          <label for="q" class="sr-only">Cerca prodotti</label>
+          <input id="q" type="search" placeholder="Cerca per nome o tag…" autocomplete="off" />
+        </div>
+      </div>
+      <div class="grid" id="product-grid" aria-live="polite"></div>
+      <div class="empty" id="no-results" style="display:none">Nessun prodotto trovato.</div>
       <div class="banner" style="margin-top:16px">
         💡 <strong>Personalizzazioni</strong>: vuoi un nome ricamato o una misura diversa? Vai alla sezione <a href="#personalizza">Personalizza</a> e compila il modulo.
       </div>
@@ -93,17 +112,20 @@
 
     <section id="personalizza" class="section">
       <h2>Personalizza il tuo prodotto</h2>
-      <p class="muted">Inserisci la richiesta, ti risponderemo con un preventivo in 24h.</p>
-      <form action="https://formspree.io/f/tuo-id" method="POST" class="card" style="padding:16px">
+      <p class="muted">Inserisci la richiesta, ti risponderemo con un preventivo entro 24 ore lavorative.</p>
+      <!-- Sostituisci "tuo-id" con l'ID reale del tuo form su Formspree (https://formspree.io/) -->
+      <form action="https://formspree.io/f/tuo-id" method="POST" class="card" style="padding:16px" novalidate>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <label>Nome e cognome<br/><input name="nome" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
-          <label>Email<br/><input type="email" name="email" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
+          <label>Nome e cognome<br/><input name="nome" required aria-required="true" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
+          <label>Email<br/><input type="email" name="email" required aria-required="true" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
           <label>Prodotto<br/>
             <select name="prodotto" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px">
               <option>Pochette</option>
               <option>Organizer</option>
+              <option>Porta-uncinetti</option>
+              <option>Shopper</option>
               <option>Altro</option>
             </select>
           </label>
@@ -113,7 +135,7 @@
           <textarea name="dettagli" rows="4" placeholder="Misure, colori, nome da ricamare…" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"></textarea>
         </label>
         <div style="display:flex;gap:10px;align-items:center;margin-top:12px">
-          <input type="checkbox" id="privacy" required />
+          <input type="checkbox" id="privacy" required aria-required="true"/>
           <label for="privacy" class="muted" style="font-size:12px">Ho letto e accetto la <a href="#privacy" onclick="openModal('privacy-modal');return false;">Privacy Policy</a></label>
         </div>
         <button class="btn" style="margin-top:12px;width:max-content">Invia richiesta</button>
@@ -140,7 +162,7 @@
 
     <section id="contatti" class="section">
       <h2>Contatti</h2>
-      <p class="muted">Scrivici su <a href="https://wa.me/393454895450" target="_blank">WhatsApp</a> o via email: <a href="mailto:lecreazionididania@gmail.com">lecreazionididania@gmail.com</a>. Seguici su <a href="https://www.instagram.com/lecreazionididania" target="_blank">Instagram</a>.</p>
+      <p class="muted">Scrivici su <a href="https://wa.me/393454895450" target="_blank" rel="noopener">WhatsApp</a> o via email: <a href="mailto:lecreazionididania@gmail.com">lecreazionididania@gmail.com</a>. Seguici su <a href="https://www.instagram.com/lecreazionididania" target="_blank" rel="noopener">Instagram</a>.</p>
     </section>
   </main>
 
@@ -186,22 +208,32 @@
   <!-- Cookie notice -->
   <div class="notice" id="cookie-notice" role="dialog" aria-live="polite" aria-label="Informativa cookie" style="display:none">
     <div>🍪 Questo sito usa cookie tecnici per funzionare correttamente.</div>
-    <button class="btn outline" onclick="acceptCookies()">Ok</button>
+    <button class="btn outline" type="button" id="cookie-ok">Ok</button>
   </div>
 
   <script>
     // Footer year
-    document.getElementById('year').textContent=new Date().getFullYear();
+    document.getElementById('year').textContent = new Date().getFullYear();
+
     // Modals helpers
     function openModal(id){document.getElementById(id).showModal()} 
     function closeModal(id){document.getElementById(id).close()}
-    // Cookie notice
-    const cn= document.getElementById('cookie-notice');
-    if(!localStorage.getItem('cookie_ok')){cn.style.display='flex'}
-    function acceptCookies(){localStorage.setItem('cookie_ok','1');cn.style.display='none'}
 
-    // === DATI E RENDERING PRODOTTI ===
+    // Cookie notice (solo se non già accettato)
+    const cookieNotice = document.getElementById('cookie-notice');
+    const cookieBtn = document.getElementById('cookie-ok');
+    if(!localStorage.getItem('cookie_ok')){cookieNotice.style.display='flex'}
+    cookieBtn.addEventListener('click', ()=>{localStorage.setItem('cookie_ok','1');cookieNotice.style.display='none'})
+
+    // === CONFIG PAGAMENTI ===
+    // Inserisci la tua email business PayPal
     const paypalBusiness = 'lecreazionididania@gmail.com';
+    // Facoltativo: URL di ritorno e notifica (se usi IPN)
+    const paypalReturn = location.origin + location.pathname + '#grazie'; // reindirizza a una sezione locale
+    const paypalCancel = location.origin + location.pathname + '#annullato';
+
+    // === CATALOGO PRODOTTI ===
+    // Aggiungi/aggiorna qui i prodotti. Le immagini devono essere caricate nella stessa cartella del sito.
     const products = [
       {
         name: 'Pochette “Oggi mordo”',
@@ -223,33 +255,97 @@
         img: 'porta-uncinetti.jpg',
         desc: 'Organizer arrotolabile lilla con tasca zip e alloggi per utensili. Chiusura a bottone, perfetto in viaggio.',
         tag: 'Nuovo'
+      },
+      // --- prodotti aggiunti ---
+      {
+        name: 'Shopper in cotone riciclato',
+        price: 24.00,
+        img: 'shopper-cotone.jpg',
+        desc: 'Borsa shopper capiente in cotone riciclato, doppio manico e tasca interna. Personalizzabile con iniziali.',
+        tag: 'Eco'
+      },
+      {
+        name: 'Porta pannolini & salviette',
+        price: 26.00,
+        img: 'porta-pannolini.jpg',
+        desc: 'Organizer da passeggino con scomparti per pannolini e salviette. Chiusura a pressione, lavabile.',
+        tag: 'Baby'
+      },
+      {
+        name: 'Astuccio fiorato',
+        price: 14.00,
+        img: 'astuccio-fiori.jpg',
+        desc: 'Astuccio compatto con stampa floreale, fodera interna e zip robusta. Perfetto per scuola o make-up.',
+        tag: 'Best seller'
       }
     ];
 
+    // === RENDERING ===
     const grid = document.getElementById('product-grid');
-    products.forEach(p=>{
-      const card = document.createElement('article');
-      card.className='card';
-      card.innerHTML = `
-        <img src="${p.img}" alt="${p.name}" />
-        <div class="body">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong>${p.name}</strong>
-            <span class="pill">${p.tag||''}</span>
-          </div>
-          <div class="muted">${p.desc}</div>
-          <div class="price">€ ${p.price.toFixed(2)}</div>
-          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input type="hidden" name="cmd" value="_xclick">
-            <input type="hidden" name="business" value="${paypalBusiness}">
-            <input type="hidden" name="item_name" value="${p.name}">
-            <input type="hidden" name="amount" value="${p.price.toFixed(2)}">
-            <input type="hidden" name="currency_code" value="EUR">
-            <button type="submit" class="btn">Acquista</button>
-          </form>
-        </div>`;
-      grid.appendChild(card);
+    const empty = document.getElementById('no-results');
+
+    function makePayPalForm(p){
+      const form = document.createElement('form');
+      form.action = 'https://www.paypal.com/cgi-bin/webscr';
+      form.method = 'post';
+      form.target = '_top';
+      form.innerHTML = `
+        <input type="hidden" name="cmd" value="_xclick">
+        <input type="hidden" name="business" value="${paypalBusiness}">
+        <input type="hidden" name="item_name" value="${p.name}">
+        <input type="hidden" name="amount" value="${p.price.toFixed(2)}">
+        <input type="hidden" name="currency_code" value="EUR">
+        <input type="hidden" name="return" value="${paypalReturn}">
+        <input type="hidden" name="cancel_return" value="${paypalCancel}">
+        <button type="submit" class="btn" aria-label="Acquista ${p.name} a ${p.price.toFixed(2)} euro">Acquista</button>`;
+      return form;
+    }
+
+    function render(list){
+      grid.innerHTML = '';
+      if(!list.length){ empty.style.display='block'; return; }
+      empty.style.display='none';
+      list.forEach(p=>{
+        const card = document.createElement('article');
+        card.className='card';
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.name}" loading="lazy"/>
+          <div class="body">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+              <strong>${p.name}</strong>
+              ${p.tag ? `<span class="pill">${p.tag}</span>` : ''}
+            </div>
+            <div class="muted">${p.desc}</div>
+            <div class="price" aria-label="Prezzo">€ ${p.price.toFixed(2)}</div>
+          </div>`;
+        const body = card.querySelector('.body');
+        body.appendChild(makePayPalForm(p));
+        grid.appendChild(card);
+      });
+    }
+
+    render(products);
+
+    // === Ricerca in tempo reale ===
+    const q = document.getElementById('q');
+    q.addEventListener('input', ()=>{
+      const val = q.value.trim().toLowerCase();
+      const filtered = products.filter(p =>
+        p.name.toLowerCase().includes(val) ||
+        (p.tag||'').toLowerCase().includes(val) ||
+        p.desc.toLowerCase().includes(val)
+      );
+      render(filtered);
     });
+
+    // Ancore "grazie/annullato" (semplice feedback dopo PayPal)
+    if(location.hash === '#grazie'){
+      setTimeout(()=>alert('Grazie! Il pagamento è andato a buon fine. Ti contatteremo a breve.'), 300);
+    }
+    if(location.hash === '#annullato'){
+      setTimeout(()=>alert('Pagamento annullato. Puoi riprovare quando vuoi.'), 300);
+    }
   </script>
 </body>
 </html>
+
