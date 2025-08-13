@@ -234,137 +234,49 @@
 
     // === CATALOGO PRODOTTI ===
     // Aggiungi/aggiorna qui i prodotti. Le immagini devono essere caricate nella stessa cartella del sito.
+    
     const products = [
-      {
-        name: 'Pochette “Oggi mordo”',
-        price: 18.00,
-        img: 'oggi-mordo.jpg',
-        desc: 'Pochette in tessuto a righe verde e panna con scritta ricamata “oggi mordo” in rosso. Zip bianca, foderata. Ideale per trucchi o piccoli accessori.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Pochette “Nel dubbio polemizzo”',
-        price: 18.00,
-        img: 'nel-dubbio-polemizzo.jpg',
-        desc: 'Pochette in tessuto a righe grigio e panna con scritta ricamata “nel dubbio polemizzo” in rosso. Zip gialla, foderata.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Porta-uncinetti / lavori',
-        price: 22.00,
-        img: 'porta-uncinetti.jpg',
-        desc: 'Organizer arrotolabile lilla con tasca zip e alloggi per utensili. Chiusura a bottone, perfetto in viaggio.',
-        tag: 'Nuovo'
-      },
-      // --- prodotti aggiunti ---
-      {
-        name: 'Shopper in cotone riciclato',
-        price: 24.00,
-        img: 'shopper-cotone.jpg',
-        desc: 'Borsa shopper capiente in cotone riciclato, doppio manico e tasca interna. Personalizzabile con iniziali.',
-        tag: 'Eco'
-      },
-      {
-        name: 'Porta pannolini & salviette',
-        price: 26.00,
-        img: 'porta-pannolini.jpg',
-        desc: 'Organizer da passeggino con scomparti per pannolini e salviette. Chiusura a pressione, lavabile.',
-        tag: 'Baby'
-      },
-      {
-        name: 'Astuccio fiorato',
-        price: 14.00,
-        img: 'astuccio-fiori.jpg',
-        desc: 'Astuccio compatto con stampa floreale, fodera interna e zip robusta. Perfetto per scuola o make-up.',
-        tag: 'Best seller'
-      }
-    ];
-     {
-        name: 'Pochette “Oggi mordo”',
-        price: 18.00,
-        img: 'oggi-mordo.jpg',
-        desc: 'Pochette in tessuto a righe verde e panna con scritta ricamata “oggi mordo” in rosso. Zip bianca, foderata. Ideale per trucchi o piccoli accessori.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Pochette “Nel dubbio polemizzo”',
-        price: 18.00,
-        img: 'nel-dubbio-polemizzo.jpg',
-        desc: 'Pochette in tessuto a righe grigio e panna con scritta ricamata “nel dubbio polemizzo” in rosso. Zip gialla, foderata.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Porta-uncinetti / lavori',
-        price: 22.00,
-        img: 'porta-uncinetti.jpg',
-        desc: 'Organizer arrotolabile lilla con tasca zip e alloggi per utensili. Chiusura a bottone, perfetto in viaggio.',
-        tag: 'Nuovo'
-      },
-      {
-        name: 'Shopper in cotone riciclato',
-        price: 24.00,
-        img: 'shopper-cotone.jpg',
-        desc: 'Borsa shopper capiente in cotone riciclato, doppio manico e tasca interna. Personalizzabile con iniziali.',
-        tag: 'Eco'
-      },
-      {
-        name: 'Porta pannolini & salviette',
-        price: 26.00,
-        img: 'porta-pannolini.jpg',
-        desc: 'Organizer da passeggino con scomparti per pannolini e salviette. Chiusura a pressione, lavabile.',
-        tag: 'Baby'
-      },
-      // === ARTICOLI AGGIUNTI ===
-      {
-        name: 'Astuccio piatto fantasia pirati',
-        price: 15.00,
-        img: 'astuccio.jpg',
-        desc: 'Astuccio piatto con zip blu e tessuto fantasia pirati/animali. Perfetto per piccoli accessori o cancelleria.',
-        tag: 'Nuovo'
-      },
-      {
-        name: 'Porta spazzolino da viaggio',
-        price: 16.00,
-        img: 'spazzolino.jpg',
-        desc: 'Custodia da viaggio con doppio scomparto per spazzolino e dentifricio. Chiusura a pressione, interno lavabile.',
-        tag: 'Baby'
-      },
-      {
-        name: 'Pochette “Oggi mordo” (righe grigie)',
-        price: 18.00,
-        img: 'oggi-mordo2.jpg',
-        desc: 'Pochette in canvas a righe grigie con scritta ricamata “Oggi mordo”. Zip rossa e laccetto laterale.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Pochette “Nata per sbuffare”',
-        price: 18.00,
-        img: 'nata-per-sbuffare.jpg',
-        desc: 'Pochette in tessuto a righe verdi con scritta ricamata “Nata per sbuffare”. Zip rossa.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Pochette “Tonica come il gin”',
-        price: 18.00,
-        img: 'tonica-come-il-gin.jpg',
-        desc: 'Pochette in canvas a righe grigie con ricamo “Tonica come il gin”. Zip rossa, comoda da polso.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Coprilibretto sanitario “Orsetti”',
-        price: 20.00,
-        img: 'A.jpg',
-        desc: 'Coprilibretto sanitario in doppia garza rosa con interno fantasia orsetti e chiusura a bottone. Tasche interne porta-documenti.',
-        tag: 'Baby'
-      },
-      {
-        name: 'Pochette in doppia garza con zip (rosa)',
-        price: 22.00,
-        img: 'B.jpg',
-        desc: 'Portatutto in doppia garza con tasca zip e chiusura a pressione. Morbida al tatto, capiente e leggera.',
-        tag: 'Nuovo'
-      }
-    ];
+  { name: 'Pochette “Oggi mordo”', price: 18.00, img: 'oggi-mordo.jpg',
+    desc: 'Pochette in tessuto a righe verde e panna con scritta ricamata “oggi mordo” in rosso. Zip bianca, foderata. Ideale per trucchi o piccoli accessori.',
+    tag: 'Fatto a mano' },
+
+  { name: 'Pochette “Nel dubbio polemizzo”', price: 18.00, img: 'nel-dubbio-polemizzo.jpg',
+    desc: 'Pochette in tessuto a righe grigio e panna con scritta ricamata “nel dubbio polemizzo” in rosso. Zip gialla, foderata.',
+    tag: 'Fatto a mano' },
+
+  { name: 'Porta-uncinetti / lavori', price: 22.00, img: 'porta-uncinetti.jpg',
+    desc: 'Organizer arrotolabile lilla con tasca zip e alloggi per utensili. Chiusura a bottone, perfetto in viaggio.',
+    tag: 'Nuovo' },
+
+  // — Articoli con foto inviate —
+  { name: 'Astuccio piatto fantasia pirati', price: 15.00, img: 'astuccio.jpg',
+    desc: 'Astuccio piatto con zip blu e tessuto fantasia pirati/animali. Perfetto per piccoli accessori o cancelleria.',
+    tag: 'Nuovo' },
+
+  { name: 'Porta spazzolino da viaggio', price: 16.00, img: 'spazzolino.jpg',
+    desc: 'Custodia da viaggio con scomparti per spazzolino e dentifricio. Chiusura a pressione, interno lavabile.',
+    tag: 'Baby' },
+
+  { name: 'Pochette “Oggi mordo” (righe grigie)', price: 18.00, img: 'oggi-mordo2.jpg',
+    desc: 'Pochette in canvas a righe grigie con scritta ricamata “Oggi mordo”. Zip rossa e laccetto laterale.',
+    tag: 'Fatto a mano' },
+
+  { name: 'Pochette “Nata per sbuffare”', price: 18.00, img: 'nata-per-sbuffare.jpg',
+    desc: 'Pochette in tessuto a righe verdi con scritta ricamata “Nata per sbuffare”. Zip rossa.',
+    tag: 'Fatto a mano' },
+
+  { name: 'Pochette “Tonica come il gin”', price: 18.00, img: 'tonica-come-il-gin.jpg',
+    desc: 'Pochette in canvas a righe grigie con ricamo “Tonica come il gin”. Zip rossa, comoda da polso.',
+    tag: 'Fatto a mano' },
+
+  { name: 'Coprilibretto sanitario “Orsetti”', price: 20.00, img: 'A.jpg',
+    desc: 'Coprilibretto sanitario in doppia garza rosa con interno fantasia orsetti e chiusura a bottone. Tasche interne porta-documenti.',
+    tag: 'Baby' },
+
+  { name: 'Pochette in doppia garza con zip (rosa)', price: 22.00, img: 'B.jpg',
+    desc: 'Portatutto in doppia garza con tasca zip e chiusura a pressione. Morbida al tatto, capiente e leggera.',
+    tag: 'Nuovo' }
+];
 
     // === RENDERING ===
     const grid = document.getElementById('product-grid');
