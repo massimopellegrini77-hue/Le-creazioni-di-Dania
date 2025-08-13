@@ -1,29 +1,255 @@
-Ho inserito i prodotti reali dalle foto che hai fornito con descrizione e prezzo.
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Le creazioni di Dania — Cucito fatto a mano</title>
+  <meta name="description" content="Prodotti di cucito fatti a mano: accessori, pochette, organizer e idee regalo personalizzate." />
+  <link rel="icon" href="logo.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--maxw:1100px;--c1:#222;--c2:#555;--brand:#c24d3c;--brand2:#ffe6dc;--bg:#faf8fb}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; color:var(--c1); background:var(--bg)}
+    a{color:var(--brand);text-decoration:none}
+    img{max-width:100%;display:block}
+    header{position:sticky;top:0;background:#fff7;backdrop-filter:saturate(150%) blur(10px);border-bottom:1px solid #eee;z-index:10}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+    .brand{display:flex;gap:10px;align-items:center}
+    nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+    nav a{color:var(--c1);font-weight:500}
+    .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--brand);color:white;background:var(--brand);transition:.2s}
+    .btn:hover{filter:brightness(0.95)}
+    .btn.outline{background:transparent;color:var(--brand)}
+    .hero{display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;align-items:center;padding:28px 0}
+    .hero h1{font-size:clamp(28px,3.6vw,42px);margin:0 0 8px;color:var(--brand)}
+    .hero p{color:var(--c2);margin:0 0 16px}
+    .badge{display:inline-block;background:var(--brand2);color:var(--brand);padding:6px 10px;border-radius:999px;font-size:12px;margin-bottom:8px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{background:#fff;border:1px solid #eee;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+    .card .body{padding:14px;display:flex;flex:1;flex-direction:column;gap:8px}
+    .price{font-weight:700;color:var(--brand)}
+    .pill{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#f6f3f9;color:#7b5d84}
+    .section{padding:28px 0}
+    .section h2{margin:0 0 8px;color:var(--brand)}
+    .muted{color:var(--c2)}
+    .banner{background:linear-gradient(135deg,#fff,#f7ecff);border:1px solid #eee;padding:18px;border-radius:16px}
+    footer{border-top:1px solid #eee;margin-top:28px}
+    .footercols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:18px;padding:22px 0}
+    .legal{font-size:12px;color:#777}
+    .notice{position:fixed;inset:auto 12px 12px 12px;background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 16px rgba(0,0,0,.05)}
+    .notice button{margin-left:auto}
+    @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.footercols{grid-template-columns:1fr 1fr}}
+    @media (max-width:600px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap topbar">
+      <div class="brand">
+        <img src="logo.jpg" alt="Le creazioni di Dania" style="height:50px;border-radius:8px;object-fit:cover"/>
+        <div>
+          <div style="font-weight:700;color:var(--brand)">Le creazioni di Dania</div>
+          <div style="font-size:12px;color:#7a7a7a">Cucito fatto a mano</div>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#prodotti">Prodotti</a></li>
+          <li><a href="#personalizza">Personalizza</a></li>
+          <li><a href="#spedizioni">Spedizioni</a></li>
+          <li><a href="#contatti">Contatti</a></li>
+        </ul>
+      </nav>
+      <div>
+        <a class="btn outline" href="#personalizza">Richiedi preventivo</a>
+      </div>
+    </div>
+  </header>
 
-```html
-<script>
-const paypalBusiness = 'LA-TUA-EMAIL-BUSINESS@esempio.it';
-const products = [
-  {
-    name: 'Pochette “Oggi mordo”',
-    price: 18.00,
-    img: 'oggi-mordo.jpg',
-    desc: 'Pochette in tessuto a righe verde e panna con scritta ricamata “oggi mordo” in rosso. Chiusura con zip bianca, perfetta per trucchi o piccoli accessori.',
-    tag: 'Fatto a mano'
-  },
-  {
-    name: 'Pochette “Nel dubbio polemizzo”',
-    price: 18.00,
-    img: 'nel-dubbio-polemizzo.jpg',
-    desc: 'Pochette in tessuto a righe grigio e panna con scritta ricamata “nel dubbio polemizzo” in rosso. Zip gialla per un tocco vivace.',
-    tag: 'Fatto a mano'
-  },
-  {
-    name: 'Porta-uncinetti/Lavori',
-    price: 22.00,
-    img: 'porta-uncinetti.jpg',
-    desc: 'Organizer in tessuto lilla e panna con tasche multiple e chiusura a bottone. Ideale per uncinetti, aghi e piccoli strumenti da cucito.',
-    tag: 'Nuovo'
-  }
-];
-```
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <span class="badge">100% fatto a mano in Italia</span>
+        <h1>Accessori e idee regalo artigianali</h1>
+        <p class="muted">Pochette, organizer e accessori in tessuto, anche personalizzati con nome ricamato.</p>
+        <a href="#prodotti" class="btn">Scopri i prodotti</a>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop" alt="Set da cucito artigianale" />
+      </div>
+    </section>
+
+    <section id="prodotti" class="section">
+      <h2>In vetrina</h2>
+      <div class="grid" id="product-grid"></div>
+      <div class="banner" style="margin-top:16px">
+        💡 <strong>Personalizzazioni</strong>: vuoi un nome ricamato o una misura diversa? Vai alla sezione <a href="#personalizza">Personalizza</a> e compila il modulo.
+      </div>
+    </section>
+
+    <section id="personalizza" class="section">
+      <h2>Personalizza il tuo prodotto</h2>
+      <p class="muted">Inserisci la richiesta, ti risponderemo con un preventivo in 24h.</p>
+      <form action="https://formspree.io/f/tuo-id" method="POST" class="card" style="padding:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <label>Nome e cognome<br/><input name="nome" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
+          <label>Email<br/><input type="email" name="email" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+          <label>Prodotto<br/>
+            <select name="prodotto" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px">
+              <option>Pochette</option>
+              <option>Organizer</option>
+              <option>Altro</option>
+            </select>
+          </label>
+          <label>Budget indicativo<br/><input name="budget" placeholder="Es. 20 €" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
+        </div>
+        <label style="display:block;margin-top:12px">Dettagli richiesta<br/>
+          <textarea name="dettagli" rows="4" placeholder="Misure, colori, nome da ricamare…" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"></textarea>
+        </label>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:12px">
+          <input type="checkbox" id="privacy" required />
+          <label for="privacy" class="muted" style="font-size:12px">Ho letto e accetto la <a href="#privacy" onclick="openModal('privacy-modal');return false;">Privacy Policy</a></label>
+        </div>
+        <button class="btn" style="margin-top:12px;width:max-content">Invia richiesta</button>
+      </form>
+    </section>
+
+    <section id="spedizioni" class="section">
+      <h2>Spedizioni & Resi</h2>
+      <div class="grid">
+        <div class="card" style="padding:14px">
+          <strong>Tempi</strong>
+          <p class="muted">Produzione: 3–5 giorni lavorativi • Spedizione: 24/48h con corriere tracciato.</p>
+        </div>
+        <div class="card" style="padding:14px">
+          <strong>Costi</strong>
+          <p class="muted">Italia: €6,90 • Gratis sopra €59. Ritiro locale gratuito su appuntamento.</p>
+        </div>
+        <div class="card" style="padding:14px">
+          <strong>Resi</strong>
+          <p class="muted">Hai 14 giorni per il reso (esclusi prodotti personalizzati, salvo difetti). Contattaci per assistenza.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contatti" class="section">
+      <h2>Contatti</h2>
+      <p class="muted">Scrivici su <a href="https://wa.me/393454895450" target="_blank">WhatsApp</a> o via email: <a href="mailto:lecreazionididania@gmail.com">lecreazionididania@gmail.com</a>. Seguici su <a href="https://www.instagram.com/lecreazionididania" target="_blank">Instagram</a>.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footercols">
+      <div>
+        <div style="font-weight:700">Le creazioni di Dania</div>
+        <p class="muted">Piccola sartoria artigianale con base in Italia. Ogni pezzo è cucito con cura, in tirature limitate.</p>
+      </div>
+      <div>
+        <strong>Info</strong>
+        <ul class="muted" style="list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px">
+          <li><a href="#privacy" onclick="openModal('privacy-modal');return false;">Privacy</a></li>
+          <li><a href="#termini" onclick="openModal('terms-modal');return false;">Termini</a></li>
+          <li><a href="#cookie" onclick="openModal('cookie-modal');return false;">Cookie</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Pagamenti</strong>
+        <p class="muted">PayPal, carte Visa/Mastercard (via PayPal). Bonifico su richiesta.</p>
+      </div>
+    </div>
+    <div class="wrap legal">© <span id="year"></span> Le creazioni di Dania — P.IVA 00000000000 (esempio)</div>
+  </footer>
+
+  <!-- Modals -->
+  <dialog id="privacy-modal" style="max-width:800px;width:90%">
+    <h3>Privacy Policy (sintesi)</h3>
+    <p>Raccogliamo i dati strettamente necessari per evadere gli ordini e rispondere alle richieste. Titolare del trattamento: [Tuo Nome], [indirizzo], email: lecreazionididania@gmail.com. Puoi richiedere accesso/cancellazione dei dati in ogni momento.</p>
+    <button class="btn outline" onclick="closeModal('privacy-modal')">Chiudi</button>
+  </dialog>
+  <dialog id="terms-modal" style="max-width:800px;width:90%">
+    <h3>Termini & Condizioni (sintesi)</h3>
+    <p>Vendita di prodotti artigianali. Diritto di recesso entro 14 giorni eccetto articoli personalizzati. Garanzia legale di conformità. Prezzi in EUR, IVA inclusa ove applicabile.</p>
+    <button class="btn outline" onclick="closeModal('terms-modal')">Chiudi</button>
+  </dialog>
+  <dialog id="cookie-modal" style="max-width:800px;width:90%">
+    <h3>Cookie (sintesi)</h3>
+    <p>Usiamo solo cookie tecnici essenziali per il funzionamento del sito. Nessun cookie di profilazione senza consenso.</p>
+    <button class="btn outline" onclick="closeModal('cookie-modal')">Chiudi</button>
+  </dialog>
+
+  <!-- Cookie notice -->
+  <div class="notice" id="cookie-notice" role="dialog" aria-live="polite" aria-label="Informativa cookie" style="display:none">
+    <div>🍪 Questo sito usa cookie tecnici per funzionare correttamente.</div>
+    <button class="btn outline" onclick="acceptCookies()">Ok</button>
+  </div>
+
+  <script>
+    // Footer year
+    document.getElementById('year').textContent=new Date().getFullYear();
+    // Modals helpers
+    function openModal(id){document.getElementById(id).showModal()} 
+    function closeModal(id){document.getElementById(id).close()}
+    // Cookie notice
+    const cn= document.getElementById('cookie-notice');
+    if(!localStorage.getItem('cookie_ok')){cn.style.display='flex'}
+    function acceptCookies(){localStorage.setItem('cookie_ok','1');cn.style.display='none'}
+
+    // === DATI E RENDERING PRODOTTI ===
+    const paypalBusiness = 'lecreazionididania@gmail.com';
+    const products = [
+      {
+        name: 'Pochette “Oggi mordo”',
+        price: 18.00,
+        img: 'oggi-mordo.jpg',
+        desc: 'Pochette in tessuto a righe verde e panna con scritta ricamata “oggi mordo” in rosso. Zip bianca, foderata. Ideale per trucchi o piccoli accessori.',
+        tag: 'Fatto a mano'
+      },
+      {
+        name: 'Pochette “Nel dubbio polemizzo”',
+        price: 18.00,
+        img: 'nel-dubbio-polemizzo.jpg',
+        desc: 'Pochette in tessuto a righe grigio e panna con scritta ricamata “nel dubbio polemizzo” in rosso. Zip gialla, foderata.',
+        tag: 'Fatto a mano'
+      },
+      {
+        name: 'Porta-uncinetti / lavori',
+        price: 22.00,
+        img: 'porta-uncinetti.jpg',
+        desc: 'Organizer arrotolabile lilla con tasca zip e alloggi per utensili. Chiusura a bottone, perfetto in viaggio.',
+        tag: 'Nuovo'
+      }
+    ];
+
+    const grid = document.getElementById('product-grid');
+    products.forEach(p=>{
+      const card = document.createElement('article');
+      card.className='card';
+      card.innerHTML = `
+        <img src="${p.img}" alt="${p.name}" />
+        <div class="body">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <strong>${p.name}</strong>
+            <span class="pill">${p.tag||''}</span>
+          </div>
+          <div class="muted">${p.desc}</div>
+          <div class="price">€ ${p.price.toFixed(2)}</div>
+          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+            <input type="hidden" name="cmd" value="_xclick">
+            <input type="hidden" name="business" value="${paypalBusiness}">
+            <input type="hidden" name="item_name" value="${p.name}">
+            <input type="hidden" name="amount" value="${p.price.toFixed(2)}">
+            <input type="hidden" name="currency_code" value="EUR">
+            <button type="submit" class="btn">Acquista</button>
+          </form>
+        </div>`;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
