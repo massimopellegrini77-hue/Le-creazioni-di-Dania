@@ -93,10 +93,10 @@
       </div>
     </section>
 
-    <section id="personalizza" class="section">
+    <section id="personalizza" class="section" novalidate>
       <h2>Personalizza il tuo prodotto</h2>
       <p class="muted">Inserisci la richiesta, ti risponderemo con un preventivo in 24h.</p>
-      <form action="https://formspree.io/f/tuo-id" method="POST" class="card" style="padding:16px">
+      <form action="https://formspree.io/f/movlbejp" method="POST" class="card" style="padding:16px">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <label>Nome e cognome<br/><input name="nome" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
           <label>Email<br/><input type="email" name="email" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
@@ -111,6 +111,17 @@
           </label>
           <label>Budget indicativo<br/><input name="budget" placeholder="Es. 20 €" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
         </div>
+        
+        <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px">
+          <label>Telefono<br/>
+            <input type="tel" name="telefono" required placeholder="+39 3XX XXX XXXX"
+                   inputmode="tel"
+                   pattern="[0-9+().\s-]{8,20}"
+                   style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/>
+            <small id="phone-error" style="display:none;color:#c24d3c">Inserisci un numero valido (es. +39 3XX XXX XXXX).</small>
+          </label>
+        </div>
+    
         <label style="display:block;margin-top:12px">Dettagli richiesta<br/>
           <textarea name="dettagli" rows="4" placeholder="Misure, colori, nome da ricamare…" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"></textarea>
         </label>
@@ -118,7 +129,9 @@
           <input type="checkbox" id="privacy" required />
           <label for="privacy" class="muted" style="font-size:12px">Ho letto e accetto la <a href="#privacy" onclick="openModal('privacy-modal');return false;">Privacy Policy</a></label>
         </div>
+        <small id="privacy-error" style="display:none;color:#c24d3c">Per continuare devi accettare la Privacy Policy.</small>
         <button class="btn" style="margin-top:12px;width:max-content">Invia richiesta</button>
+  <p id="form-status" class="muted" style="margin-top:8px"></p>
       </form>
     </section>
 
@@ -144,62 +157,6 @@
       <h2>Contatti</h2>
       <p class="muted">Scrivici su <a href="https://wa.me/393454895450" target="_blank">WhatsApp</a> o via email: <a href="mailto:lecreazionididania@gmail.com">lecreazionididania@gmail.com</a>. Seguici su <a href="https://www.instagram.com/lecreazionididania" target="_blank">Instagram</a>.</p>
     </section>
-  
-  <section id="preventivi" class="container" style="margin-top:32px">
-    <h2 style="margin:0 0 10px">Richiedi un preventivo</h2>
-    <p class="muted" style="margin:0 0 12px">Per personalizzazioni, ricami o ordini su misura compila il form: rispondiamo entro 24 ore.</p>
-    <form id="quote-form"
-          action="https://formspree.io/f/movlbejp"
-          method="POST"
-          class="card"
-          style="padding:16px"
-          novalidate>
-      <input type="hidden" name="_subject"  value="Richiesta preventivo — Le creazioni di Dania">
-      <input type="hidden" name="_language" value="it">
-      <input type="hidden" name="_redirect" value="grazie.html">
-      <input type="text" name="_gotcha" style="display:none">
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <label>Nome e cognome<br/>
-          <input name="nome" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/>
-        </label>
-        <label>Email<br/>
-          <input type="email" name="email" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/>
-        </label>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-        <label>Prodotto<br/>
-          <select name="prodotto" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px">
-            <option>Pochette</option>
-            <option>Organizer</option>
-            <option>Coprilibretto</option>
-            <option>Astuccio</option>
-            <option>Altro</option>
-          </select>
-        </label>
-        <label>Budget indicativo<br/>
-          <input name="budget" placeholder="Es. 20 €" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/>
-        </label>
-      </div>
-
-      <label style="display:block;margin-top:12px">Dettagli richiesta<br/>
-        <textarea name="dettagli" rows="4" placeholder="Misure, colori, nome da ricamare…"
-                  style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"></textarea>
-      </label>
-
-      <div style="display:flex;gap:10px;align-items:center;margin-top:12px">
-        <input type="checkbox" id="privacy" required />
-        <label for="privacy" class="muted" style="font-size:12px">
-          Ho letto e accetto la <a href="#privacy" onclick="openModal('privacy-modal');return false;">Privacy Policy</a>
-        </label>
-      </div>
-
-      <button class="btn" style="margin-top:12px;width:max-content">Invia richiesta</button>
-      <p id="form-status" class="muted" style="margin-top:8px"></p>
-    </form>
-  </section>
-
 </main>
 
   <footer>
@@ -343,6 +300,33 @@
   const status = document.getElementById('form-status');
   if (!form || !status) return;
   form.addEventListener('submit', async (e) => {
+    const phone = form.querySelector('input[name="telefono"]');
+    const privacy = document.getElementById('privacy');
+    const phoneErr = document.getElementById('phone-error');
+    const privacyErr = document.getElementById('privacy-error');
+
+    // Validazione Telefono (8-20 caratteri permessi + cifre/spazi/+/.())
+    const raw = (phone?.value || '').trim();
+    const ok = /^[0-9+().\s-]{8,20}$/.test(raw) && (raw.replace(/\D/g,'').length >= 8);
+    if (!ok) {
+      e.preventDefault();
+      if (phoneErr) phoneErr.style.display = 'inline';
+      if (privacyErr) privacyErr.style.display = 'none';
+      phone?.focus();
+      return;
+    } else {
+      if (phoneErr) phoneErr.style.display = 'none';
+    }
+
+    // Validazione Privacy obbligatoria
+    if (!privacy?.checked) {
+      e.preventDefault();
+      if (privacyErr) privacyErr.style.display = 'inline';
+      return;
+    } else {
+      if (privacyErr) privacyErr.style.display = 'none';
+    }
+
     e.preventDefault();
     status.textContent = 'Invio in corso…';
     try {
