@@ -46,17 +46,6 @@
     .notice button{margin-left:auto}
     @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.footercols{grid-template-columns:1fr 1fr}}
     @media (max-width:600px){.grid{grid-template-columns:1fr}}
-  
-    /* Lightbox */
-    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;gap:12px;z-index:9999;padding:20px}
-    .lightbox[hidden]{display:none}
-    .lightbox img{max-width:92vw;max-height:86vh;border-radius:12px;box-shadow:0 6px 40px rgba(0,0,0,.4);touch-action:none;}
-    .lb-caption{position:absolute;left:20px;bottom:16px;background:rgba(0,0,0,.45);color:#fff;padding:6px 10px;border-radius:8px;font-size:14px}
-    .lb-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:999px;width:44px;height:44px;font-size:26px;line-height:42px;text-align:center;cursor:pointer}
-    .lb-prev{left:16px}
-    .lb-next{right:16px}
-    .lb-close{top:16px;right:16px;transform:none;width:38px;height:38px;line-height:36px;font-size:24px}
-    @media (max-width:600px){.lightbox img{max-width:95vw;max-height:78vh} .lb-btn{width:40px;height:40px;line-height:38px}}
   </style>
 </head>
 <body>
@@ -257,12 +246,7 @@
     "price": 22.0,
     "img": "B.jpg",
     "desc": "Coprilibretto in tessuto doppia garza con inserto centrale in cotone fantasia. Protegge e tiene in ordine i documenti.",
-    "tag": "Bimbi",
-    "gallery": [
-      "A.jpg",
-      "C.jpg",
-      "D.jpg"
-    ]
+    "tag": "Bimbi"
   },
   {
     "name": "Pochette “Nata per sbuffare”",
@@ -334,90 +318,6 @@
     }
 
     const grid = document.getElementById('product-grid');
-
-    // --- Lightbox logic ---
-    let LB_IMAGES = [];
-    let LB_INDEX = 0;
-    let LB_SCALE = 1;
-    let LB_BASE = 1;
-    let LB_START_DIST = 0;
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lb-img');
-    const lbCaption = document.getElementById('lb-caption');
-    const btnPrev = document.querySelector('.lb-prev');
-    const btnNext = document.querySelector('.lb-next');
-    const btnClose = document.querySelector('.lb-close');
-
-    function updateLightbox(){
-      if(!LB_IMAGES.length) return;
-      LB_INDEX = (LB_INDEX + LB_IMAGES.length) % LB_IMAGES.length;
-      lbImg.src = LB_IMAGES[LB_INDEX];
-    }
-    function openLightbox(images, start=0, caption=''){
-      LB_IMAGES = images||[];
-      LB_INDEX = start||0;
-      updateLightbox();
-      if(lbCaption) lbCaption.textContent = caption||'';
-      lb.removeAttribute('hidden');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeLightbox(){
-      lb.setAttribute('hidden','');
-      document.body.style.overflow = '';
-    }
-
-    btnPrev?.addEventListener('click', ()=>{ LB_INDEX--; updateLightbox(); });
-    btnNext?.addEventListener('click', ()=>{ LB_INDEX++; updateLightbox(); });
-    btnClose?.addEventListener('click', closeLightbox);
-    lb?.addEventListener('click', (e)=>{ if(e.target===lb) closeLightbox(); });
-    document.addEventListener('keydown', (e)=>{
-      if(lb.hasAttribute('hidden')) return;
-      if(e.key==='Escape') closeLightbox();
-      if(e.key==='ArrowLeft') { LB_INDEX--; updateLightbox(); }
-      if(e.key==='ArrowRight'){ LB_INDEX++; updateLightbox(); }
-    });
-
-    // Zoom handlers (pinch on mobile, wheel on desktop)
-    function setScale(s){
-      LB_SCALE = Math.max(1, Math.min(4, s));
-      lbImg.style.transform = `scale(${LB_SCALE})`;
-      lbImg.style.cursor = LB_SCALE>1 ? 'zoom-out' : 'default';
-    }
-    setScale(1);
-
-    lbImg.addEventListener('wheel', (e)=>{
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? -0.1 : 0.1;
-      setScale(LB_SCALE + delta);
-    }, {passive:false});
-
-    // Pointer-based pinch zoom
-    const pointers = new Map();
-    const dist = (a,b)=> Math.hypot(a.x-b.x, a.y-b.y);
-
-    lbImg.addEventListener('pointerdown', (e)=>{
-      lbImg.setPointerCapture(e.pointerId);
-      pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
-      if(pointers.size===2){
-        const arr=[...pointers.values()];
-        LB_START_DIST = dist(arr[0], arr[1]);
-        LB_BASE = LB_SCALE;
-      }
-    });
-    lbImg.addEventListener('pointermove', (e)=>{
-      if(!pointers.has(e.pointerId)) return;
-      pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
-      if(pointers.size===2 && LB_START_DIST>0){
-        const arr=[...pointers.values()];
-        const d = dist(arr[0], arr[1]);
-        const factor = d / (LB_START_DIST || d);
-        setScale(LB_BASE * factor);
-      }
-    });
-    lbImg.addEventListener('pointerup', (e)=>{ pointers.delete(e.pointerId); if(pointers.size<2){ LB_START_DIST=0; } });
-    lbImg.addEventListener('pointercancel', (e)=>{ pointers.clear(); LB_START_DIST=0; });
-
-
     products.forEach(p=>{
       const card = document.createElement('article');
       card.className='card';
@@ -439,25 +339,6 @@
             <button type="submit" class="btn">Acquista</button>
           </form>            <button type="button" class="btn satispay pay-satispay">Satispay</button>          </div>        </div>`;
       const sb = card.querySelector('.pay-satispay'); if(sb){ sb.addEventListener('click', ()=> paySatispay(p.name, p.price)); }
-      // dataset with images (main first + gallery)
-      card.dataset.images = JSON.stringify([p.img, ...(p.gallery||[])]);
-      card.dataset.caption = p.name;
-
-      const mainImg = card.querySelector('img');
-      // Click on main image opens lightbox
-      if(mainImg){
-        mainImg.style.cursor = 'zoom-in';
-        mainImg.addEventListener('click', ()=>{
-          try{ openLightbox(JSON.parse(card.dataset.images||'[]'), 0, card.dataset.caption||''); }catch(e){}
-        });
-      }
-      // Thumbs swap + open lightbox at that index
-      const thumbs = Array.from(card.querySelectorAll('.thumbs img'));
-      thumbs.forEach((t,idx)=> t.addEventListener('click', ()=>{
-        if(mainImg){ mainImg.src = t.src; }
-        try{ openLightbox(JSON.parse(card.dataset.images||'[]'), idx+1, card.dataset.caption||''); }catch(e){}
-      }));
-
       grid.appendChild(card);
     });
   </script>
@@ -515,14 +396,5 @@
 })();
 </script>
 
-
-  <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" hidden aria-modal="true" role="dialog" aria-label="Galleria immagini">
-    <button class="lb-btn lb-prev" aria-label="Immagine precedente">‹</button>
-    <img id="lb-img" alt="Anteprima prodotto">
-    <button class="lb-btn lb-next" aria-label="Immagine successiva">›</button>
-    <button class="lb-btn lb-close" aria-label="Chiudi">✕</button>
-    <div id="lb-caption" class="lb-caption"></div>
-  </div>
 </body>
 </html>
