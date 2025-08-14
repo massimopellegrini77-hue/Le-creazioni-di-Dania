@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Le creazioni di Dania — Cucito fatto a mano</title>
   <meta name="description" content="Prodotti di cucito fatti a mano: accessori, pochette, organizer e idee regalo personalizzate." />
+  <meta name="theme-color" content="#c24d3c">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="logo.jpg" type="image/jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +23,7 @@
     .brand{display:flex;gap:10px;align-items:center}
     nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
     nav a{color:var(--c1);font-weight:500}
-    .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--brand);color:white;background:var(--brand);transition:.2s}
+    .btn{display:inline-block;padding:12px 18px;border-radius:12px;border:1px solid var(--brand);color:white;background:var(--brand);transition:.2s;touch-action:manipulation}
     .btn:hover{filter:brightness(0.95)}
     .btn.satispay{background:#e53b3b;border-color:#e53b3b;color:#fff}
     .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
@@ -31,35 +33,40 @@
     .hero p{color:var(--c2);margin:0 0 16px}
     .badge{display:inline-block;background:var(--brand2);color:var(--brand);padding:6px 10px;border-radius:999px;font-size:12px;margin-bottom:8px}
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .card{background:#fff;border:1px solid #eee;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+    .card{background:#fff;border:1px solid #eee;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.03)}
     .card .body{padding:14px;display:flex;flex:1;flex-direction:column;gap:8px}
+    .card img{width:100%;aspect-ratio:1/1;object-fit:cover}
     .price{font-weight:700;color:var(--brand)}
     .pill{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#f6f3f9;color:#7b5d84}
     .section{padding:28px 0}
     .section h2{margin:0 0 8px;color:var(--brand)}
     .muted{color:var(--c2)}
+    .only-mobile{display:none}@media (max-width:600px){.only-mobile{display:inline-flex}}
     .banner{background:linear-gradient(135deg,#fff,#f7ecff);border:1px solid #eee;padding:18px;border-radius:16px}
     footer{border-top:1px solid #eee;margin-top:28px}
     .footercols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:18px;padding:22px 0}
     .legal{font-size:12px;color:#777}
     .notice{position:fixed;inset:auto 12px 12px 12px;background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 16px rgba(0,0,0,.05)}
     .notice button{margin-left:auto}
-    @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.footercols{grid-template-columns:1fr 1fr}}
-    @media (max-width:600px){.grid{grid-template-columns:1fr}}
+    @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.footercols{grid-template-columns:1fr 1fr} nav .menu-toggle{display:inline-flex}}
+    nav .menu-toggle{display:none;align-items:center;justify-content:center;height:38px;min-width:44px;padding:0 10px;border:1px solid #ddd;border-radius:10px;background:#fff}
+    nav.open ul{display:flex;flex-direction:column;position:absolute;right:16px;top:64px;background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+    @media (max-width:600px){.grid{grid-template-columns:1fr} nav ul{display:none}}
   </style>
 </head>
 <body>
   <header>
     <div class="wrap topbar">
       <div class="brand">
-        <img src="logo.jpg" alt="Le creazioni di Dania" style="height:50px;border-radius:8px;object-fit:cover"/>
+        <img src="logo.jpg" alt="Le creazioni di Dania" style="height:50px;border-radius:8px;object-fit:cover" loading="lazy" decoding="async"/>
         <div>
           <div style="font-weight:700;color:var(--brand)">Le creazioni di Dania</div>
           <div style="font-size:12px;color:#7a7a7a">Cucito fatto a mano</div>
         </div>
       </div>
-      <nav>
-        <ul>
+      <nav id="site-nav">
+        <button class="menu-toggle" aria-controls="navlist" aria-expanded="false" aria-label="Apri il menu">☰</button>
+        <ul id="navlist">
           <li><a href="#prodotti">Prodotti</a></li>
           <li><a href="#personalizza">Personalizza</a></li>
           <li><a href="#spedizioni">Spedizioni</a></li>
@@ -81,12 +88,25 @@
         <a href="#prodotti" class="btn">Scopri i prodotti</a>
       </div>
       <div>
-        <img src="logo.jpg" />
+        <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop" alt="Set da cucito artigianale" />
       </div>
     </section>
 
     <section id="prodotti" class="section">
       <h2>In vetrina</h2>
+      
+      <div class="controls" role="search" aria-label="Filtra prodotti" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0 16px">
+        <input id="q" type="search" placeholder="Cerca per nome o descrizione…" aria-label="Cerca" 
+               style="flex:1;min-width:220px;padding:10px;border:1px solid #ddd;border-radius:10px"/>
+        <div class="tags" style="display:flex;flex-wrap:wrap;gap:8px">
+          <label class="pill" style="cursor:pointer"><input type="checkbox" value="Bimbi"  style="margin-right:6px"> Bimbi</label>
+          <label class="pill" style="cursor:pointer"><input type="checkbox" value="Novità" style="margin-right:6px"> Novità</label>
+          <label class="pill" style="cursor:pointer"><input type="checkbox" value="Fatto a mano" style="margin-right:6px"> Fatto a mano</label>
+          <label class="pill" style="cursor:pointer"><input type="checkbox" value="Best seller" style="margin-right:6px"> Best seller</label>
+          <button id="clearFilters" class="btn outline" type="button" aria-label="Azzera filtri">Azzera</button>
+        </div>
+      </div>
+
       <div class="grid" id="product-grid"></div>
       <div class="banner" style="margin-top:16px">
         💡 <strong>Personalizzazioni</strong>: vuoi un nome ricamato o una misura diversa? Vai alla sezione <a href="#personalizza">Personalizza</a> e compila il modulo.
@@ -96,7 +116,11 @@
     <section id="personalizza" class="section" novalidate>
       <h2>Personalizza il tuo prodotto</h2>
       <p class="muted">Inserisci la richiesta, ti risponderemo con un preventivo in 24h.</p>
-      <form action="https://formspree.io/f/movlbejp" method="POST" class="card" style="padding:16px">
+      <form id="quote-form" action="https://formspree.io/f/movlbejp" method="POST" class="card" style="padding:16px" novalidate>
+        <input type="hidden" name="_subject"  value="Richiesta preventivo — Le creazioni di Dania">
+        <input type="hidden" name="_language" value="it">
+        <input type="hidden" name="_redirect" value="grazie.html">
+        <input type="text"   name="_gotcha"  style="display:none">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <label>Nome e cognome<br/><input name="nome" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
           <label>Email<br/><input type="email" name="email" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
@@ -155,7 +179,7 @@
 
     <section id="contatti" class="section">
       <h2>Contatti</h2>
-      <p class="muted">Scrivici su <a href="https://wa.me/393454895450" target="_blank">WhatsApp</a> o via email: <a href="mailto:lecreazionididania@gmail.com">lecreazionididania@gmail.com</a>. Seguici su <a href="https://www.instagram.com/lecreazionididania" target="_blank">Instagram</a>.</p>
+      <p class="muted">Scrivici su <a href="https://wa.me/393454895450" target="_blank" rel="noopener noreferrer">WhatsApp</a> o via email: <a href="mailto:lecreazionididania@gmail.com">lecreazionididania@gmail.com</a>. Seguici su <a href="https://www.instagram.com/lecreazionididania" target="_blank" rel="noopener noreferrer">Instagram</a>.</p>
     </section>
 </main>
 
@@ -225,6 +249,14 @@
     // Modals helpers
     function openModal(id){document.getElementById(id).showModal()} 
     function closeModal(id){document.getElementById(id).close()}
+    // Mobile nav toggle
+    const nav = document.getElementById('site-nav');
+    const btn = nav?.querySelector('.menu-toggle');
+    btn?.addEventListener('click', ()=>{
+      const isOpen = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
     // Cookie notice
     const cn= document.getElementById('cookie-notice');
     if(!localStorage.getItem('cookie_ok')){cn.style.display='flex'}
@@ -239,49 +271,49 @@
     "name": "Astuccio zip – Pirati",
     "price": 15.0,
     "img": "astuccio.jpg",
-    "desc": "Bustina piatta in cotone fantasia pirati con cerniera. Ideale per colori, giochi o piccoli accessori,Lavabile.",
+    "desc": "Bustina piatta in cotone fantasia pirati con cerniera. Ideale per colori, giochi o piccoli accessori. Lavabile.",
     "tag": "Novità"
   },
   {
     "name": "Porta gioie da viaggi e accessori per capelli",
     "price": 22.0,
     "img": "B.jpg",
-    "desc": "Porta gioie da viaggi e accessori per capelli in tessuto doppia garza con inserto centrale in cotone fantasia,Lavabile.",
+    "desc": "Porta gioie da viaggi e accessori per capelli in tessuto doppia garza con inserto centrale in cotone fantasia. Lavabile.",
     "tag": "Bimbi"
   },
   {
     "name": "Pochette “Nata per sbuffare”",
     "price": 20.0,
     "img": "nata-per-sbuffare.jpg",
-    "desc": "Pochette in cotone a righe verde/panna con ricamo “NATA PER SBUFFARE”, zip rossa e fodera interna,Lavabile.",
+    "desc": "Pochette in cotone a righe verde/panna con ricamo “NATA PER SBUFFARE”, zip rossa e fodera interna. Lavabile.",
     "tag": "Best seller"
   },
   {
     "name": "Pochette “Nel dubbio polemizzo”",
     "price": 20.0,
     "img": "nel-dubbio-polemizzo.jpg",
-    "desc": "Pochette in cotone a righe grigio/panna con ricamo “NEL DUBBIO POLEMIZZO”, zip gialla e fodera interna,Lavabile.",
+    "desc": "Pochette in cotone a righe grigio/panna con ricamo “NEL DUBBIO POLEMIZZO”, zip gialla e fodera interna. Lavabile.",
     "tag": "Fatto a mano"
   },
   {
     "name": "Pochette “Oggi mordo” (verde)",
     "price": 20.0,
     "img": "oggi-mordo.jpg",
-    "desc": "Pochette in cotone a righe verde/panna con ricamo “OGGI MORDO”. Zip chiara e fodera interna,Lavabile.",
+    "desc": "Pochette in cotone a righe verde/panna con ricamo “OGGI MORDO”. Zip chiara e fodera interna. Lavabile.",
     "tag": "Fatto a mano"
   },
   {
     "name": "Pochette “Oggi mordo” (grigia)",
     "price": 20.0,
     "img": "oggi-mordo2.jpg",
-    "desc": "Pochette in cotone a righe grigio/panna con ricamo “OGGI MORDO”, zip rossa e fodera interna,Lavabile.",
+    "desc": "Pochette in cotone a righe grigio/panna con ricamo “OGGI MORDO”, zip rossa e fodera interna. Lavabile.",
     "tag": "Fatto a mano"
   },
   {
     "name": "Porta gioie da viaggio e accessori capelli",
     "price": 22.0,
     "img": "porta-uncinetti.jpg",
-    "desc": "Organizer arrotolabile con tasca a zip e alloggi per utensili. Chiusura a bottone, pratico da viaggio,Lavabile.",
+    "desc": "Organizer arrotolabile con tasca a zip e alloggi per utensili. Chiusura a bottone, pratico da viaggio. Lavabile.",
     "tag": "Novità"
   },
   {
@@ -295,14 +327,14 @@
     "name": "Porta spazzolino – Variante compatta",
     "price": 15.0,
     "img": "spazzolino1.jpg",
-    "desc": "Porta spazzolino compatto in tessuto fantasia con alloggi interni e chiusura a pressione. Perfetto da infilare nello zaino, Lavabile.",
+    "desc": "Porta spazzolino compatto in tessuto fantasia con alloggi interni e chiusura a pressione. Perfetto da infilare nello zaino. Lavabile.",
     "tag": "Bimbi"
   },
   {
     "name": "Pochette “Tonica come il gin”",
     "price": 20.0,
     "img": "tonica-come-il-gin.jpg",
-    "desc": "Pochette in cotone a righe grigio/panna con ricamo “TONICA (COME IL GIN)”. Zip rossa e pratico laccetto,Lavabile.",
+    "desc": "Pochette in cotone a righe grigio/panna con ricamo “TONICA (COME IL GIN)”. Zip rossa e pratico laccetto. Lavabile.",
     "tag": "Fatto a mano"
   }
 ];
@@ -342,6 +374,97 @@
       const sb = card.querySelector('.pay-satispay'); if(sb){ sb.addEventListener('click', ()=> paySatispay(p.name, p.price)); }
       grid.appendChild(card);
     });
+  </script>
+
+  <script>
+
+    // === Ricerca & Filtri ===
+    const q = document.getElementById('q');
+    const tagInputs = Array.from(document.querySelectorAll('.tags input[type="checkbox"]'));
+    const btnClear = document.getElementById('clearFilters');
+    const gridEl = document.getElementById('product-grid');
+
+    function render(list){
+      gridEl.innerHTML = '';
+      list.forEach(p => {
+        const card = document.createElement('article');
+        card.className='card';
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async" />
+          <div class="body">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+              <strong style="line-height:1.2">${p.name}</strong>
+              <span class="pill">${p.tag||''}</span>
+            </div>
+            <div class="muted">${p.desc}</div>
+            <div class="price">€ ${p.price.toFixed(2)}</div>
+            <div class="actions">
+              <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_xclick">
+                <input type="hidden" name="business" value="${paypalBusiness}">
+                <input type="hidden" name="item_name" value="${p.name}">
+                <input type="hidden" name="amount" value="${p.price.toFixed(2)}">
+                <input type="hidden" name="currency_code" value="EUR">
+                <button type="submit" class="btn">Acquista</button>
+              </form>
+              <button type="button" class="btn satispay pay-satispay">Satispay</button>
+              <button type="button" class="btn outline only-mobile buybar-open">Compra rapido</button>
+            </div>
+          </div>`;
+        card.querySelector('.pay-satispay')?.addEventListener('click', ()=> paySatispay(p.name, p.price));
+        // Mobile buybar
+        card.querySelector('.buybar-open')?.addEventListener('click', ()=> showBuyBar(p));
+        gridEl.appendChild(card);
+      });
+    }
+
+    function applyFilters(){
+      const query = (q?.value || '').toLowerCase().trim();
+      const activeTags = tagInputs.filter(i => i.checked).map(i => i.value);
+      const filtered = products.filter(p => {
+        const text = (p.name + ' ' + p.desc).toLowerCase();
+        const matchText = !query || text.includes(query);
+        const matchTag = !activeTags.length || activeTags.includes(p.tag);
+        return matchText && matchTag;
+      });
+      render(filtered);
+    }
+
+    q?.addEventListener('input', applyFilters);
+    tagInputs.forEach(i => i.addEventListener('change', applyFilters));
+    btnClear?.addEventListener('click', () => { if(q) q.value=''; tagInputs.forEach(i=>i.checked=false); applyFilters(); });
+
+    // Initial render uses existing 'products'
+    render(products);
+
+    // === Mobile Buy Bar ===
+    const buybar = document.getElementById('buybar');
+    const bbName = document.getElementById('bb-name');
+    const bbPrice = document.getElementById('bb-price');
+    const bbPayPal = document.getElementById('bb-paypal');
+    const bbSatispay = document.getElementById('bb-satispay');
+    const bbClose = document.getElementById('bb-close');
+
+    function showBuyBar(p){
+      if(!buybar) return;
+      bbName.textContent = p.name;
+      bbPrice.textContent = `€ ${p.price.toFixed(2)}`;
+      // Configure PayPal hidden fields
+      bbPayPal.querySelector('input[name="item_name"]').value = p.name;
+      bbPayPal.querySelector('input[name="amount"]').value    = p.price.toFixed(2);
+      // Configure Satispay button
+      bbSatispay.onclick = () => paySatispay(p.name, p.price);
+      buybar.hidden = false;
+    }
+    bbClose?.addEventListener('click', ()=> { if(buybar) buybar.hidden = true; });
+
+    // === PWA: Service Worker registration ===
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(()=>{});
+      });
+    }
+
   </script>
 
 <script>
@@ -396,6 +519,29 @@
   });
 })();
 </script>
+
+
+  <!-- Mobile Buy Bar -->
+  <div id="buybar" class="buybar" hidden style="position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid #eee;box-shadow:0 -6px 16px rgba(0,0,0,.06);padding:10px">
+    <div class="wrap" style="display:flex;gap:10px;align-items:center;justify-content:space-between">
+      <div style="min-width:0">
+        <div id="bb-name" style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+        <div id="bb-price" class="price" style="font-size:14px"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <form id="bb-paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+          <input type="hidden" name="cmd" value="_xclick">
+          <input type="hidden" name="business" value="lecreazionididania@gmail.com">
+          <input type="hidden" name="item_name" value="">
+          <input type="hidden" name="amount" value="">
+          <input type="hidden" name="currency_code" value="EUR">
+          <button type="submit" class="btn" aria-label="Acquista con PayPal (barra)">Acquista</button>
+        </form>
+        <button id="bb-satispay" class="btn satispay" type="button" aria-label="Paga con Satispay (barra)">Satispay</button>
+        <button id="bb-close" class="btn outline" type="button" aria-label="Chiudi barra">Chiudi</button>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

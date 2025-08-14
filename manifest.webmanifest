@@ -1,0 +1,20 @@
+{
+  "name": "Le creazioni di Dania",
+  "short_name": "Dania",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf8fb",
+  "theme_color": "#c24d3c",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
