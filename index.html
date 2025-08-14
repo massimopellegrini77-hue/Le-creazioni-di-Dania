@@ -234,28 +234,82 @@
     // Inserisci qui il tuo link Pay-by-Link Satispay (es. https://satispay.me/TUO_HANDLE)
     const satispayLink = 'https://satispay.me/TUO_HANDLE';
     const products = [
-      {
-        name: 'Pochette “Oggi mordo”',
-        price: 18.00,
-        img: 'oggi-mordo.jpg',
-        desc: 'Pochette in tessuto a righe verde e panna con scritta ricamata “oggi mordo” in rosso. Zip bianca, foderata. Ideale per trucchi o piccoli accessori.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Pochette “Nel dubbio polemizzo”',
-        price: 18.00,
-        img: 'nel-dubbio-polemizzo.jpg',
-        desc: 'Pochette in tessuto a righe grigio e panna con scritta ricamata “nel dubbio polemizzo” in rosso. Zip gialla, foderata.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Porta-uncinetti / lavori',
-        price: 22.00,
-        img: 'porta-uncinetti.jpg',
-        desc: 'Organizer arrotolabile lilla con tasca zip e alloggi per utensili. Chiusura a bottone, perfetto in viaggio.',
-        tag: 'Nuovo'
-      }
-    ];
+  {
+    "name": "Astuccio doppia zip – Pirati",
+    "price": 15.0,
+    "img": "astuccio.jpg",
+    "desc": "Bustina piatta in cotone fantasia pirati con doppia cerniera. Ideale per colori, giochi o piccoli accessori.",
+    "tag": "Novità"
+  },
+  {
+    "name": "Coprilibretto sanitario – Modello B",
+    "price": 22.0,
+    "img": "B.jpg",
+    "desc": "Coprilibretto in tessuto doppia garza con inserto centrale in cotone fantasia. Protegge e tiene in ordine i documenti.",
+    "tag": "Bimbi",
+    "gallery": [
+      "A.jpg",
+      "C.jpg",
+      "D.jpg"
+    ]
+  },
+  {
+    "name": "Pochette “Nata per sbuffare”",
+    "price": 18.0,
+    "img": "nata-per-sbuffare.jpg",
+    "desc": "Pochette in cotone a righe verde/panna con ricamo “NATA PER SBUFFARE”, zip rossa e fodera interna.",
+    "tag": "Best seller"
+  },
+  {
+    "name": "Pochette “Nel dubbio polemizzo”",
+    "price": 18.0,
+    "img": "nel-dubbio-polemizzo.jpg",
+    "desc": "Pochette in cotone a righe grigio/panna con ricamo “NEL DUBBIO POLEMIZZO”, zip gialla e fodera interna.",
+    "tag": "Fatto a mano"
+  },
+  {
+    "name": "Pochette “Oggi mordo” (verde)",
+    "price": 18.0,
+    "img": "oggi-mordo.jpg",
+    "desc": "Pochette in cotone a righe verde/panna con ricamo “OGGI MORDO”. Zip chiara e fodera interna.",
+    "tag": "Fatto a mano"
+  },
+  {
+    "name": "Pochette “Oggi mordo” (grigia)",
+    "price": 18.0,
+    "img": "oggi-mordo2.jpg",
+    "desc": "Pochette in cotone a righe grigio/panna con ricamo “OGGI MORDO”, zip rossa e fodera interna.",
+    "tag": "Fatto a mano"
+  },
+  {
+    "name": "Porta-uncinetti / lavori",
+    "price": 22.0,
+    "img": "porta-uncinetti.jpg",
+    "desc": "Organizer arrotolabile con tasca a zip e alloggi per utensili. Chiusura a bottone, pratico da viaggio.",
+    "tag": "Novità"
+  },
+  {
+    "name": "Porta spazzolino da viaggio – Pirati",
+    "price": 14.0,
+    "img": "spazzolino.jpg",
+    "desc": "Astuccio portaspazzolino bimbi in cotone fantasia pirati: tre scomparti interni e chiusura con bottoni a pressione. Lavabile.",
+    "tag": "Bimbi"
+  },
+  {
+    "name": "Porta spazzolino – Variante compatta",
+    "price": 14.0,
+    "img": "spazzolino1.jpg",
+    "desc": "Porta spazzolino compatto in tessuto fantasia con alloggi interni e chiusura a pressione. Perfetto da infilare nello zaino.",
+    "tag": "Bimbi"
+  },
+  {
+    "name": "Pochette “Tonica come il gin”",
+    "price": 18.0,
+    "img": "tonica-come-il-gin.jpg",
+    "desc": "Pochette in cotone a righe grigio/panna con ricamo “TONICA (COME IL GIN)”. Zip rossa e pratico laccetto.",
+    "tag": "Fatto a mano"
+  }
+];
 
     function paySatispay(name, price){
       const descr = `${name} — € ${price.toFixed(2)}`;
@@ -273,7 +327,7 @@
       const card = document.createElement('article');
       card.className='card';
       card.innerHTML = `
-        <img src="${p.img}" alt="${p.name}" />
+        <img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async" />
         <div class="body">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <strong>${p.name}</strong>
@@ -290,6 +344,8 @@
             <button type="submit" class="btn">Acquista</button>
           </form>            <button type="button" class="btn satispay pay-satispay">Satispay</button>          </div>        </div>`;
       const sb = card.querySelector('.pay-satispay'); if(sb){ sb.addEventListener('click', ()=> paySatispay(p.name, p.price)); }
+      const mainImg = card.querySelector('img');
+      card.querySelectorAll('.thumbs img').forEach(t => t.addEventListener('click', ()=>{ if(mainImg){ mainImg.src = t.src; } }));
       grid.appendChild(card);
     });
   </script>
