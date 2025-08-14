@@ -21,16 +21,17 @@
     .brand{display:flex;gap:10px;align-items:center}
     nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
     nav a{color:var(--c1);font-weight:500}
-    .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--brand);color:white;background:var(--brand);transition:.2s}
+    .btn{display:inline-block;padding:12px 18px;border-radius:12px;border:1px solid var(--brand);color:white;background:var(--brand);transition:.2s;touch-action:manipulation}
     .btn:hover{filter:brightness(0.95)}
     .btn.outline{background:transparent;color:var(--brand)}
     .hero{display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;align-items:center;padding:28px 0}
     .hero h1{font-size:clamp(28px,3.6vw,42px);margin:0 0 8px;color:var(--brand)}
     .hero p{color:var(--c2);margin:0 0 16px}
     .badge{display:inline-block;background:var(--brand2);color:var(--brand);padding:6px 10px;border-radius:999px;font-size:12px;margin-bottom:8px}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
     .card{background:#fff;border:1px solid #eee;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
     .card .body{padding:14px;display:flex;flex:1;flex-direction:column;gap:8px}
+    .card img{width:100%;aspect-ratio:1/1;object-fit:cover}
     .price{font-weight:700;color:var(--brand)}
     .pill{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#f6f3f9;color:#7b5d84}
     .section{padding:28px 0}
@@ -42,15 +43,15 @@
     .legal{font-size:12px;color:#777}
     .notice{position:fixed;inset:auto 12px 12px 12px;background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 16px rgba(0,0,0,.05)}
     .notice button{margin-left:auto}
-    @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.footercols{grid-template-columns:1fr 1fr}}
-    @media (max-width:600px){.grid{grid-template-columns:1fr}}
+    @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.footercols{grid-template-columns:1fr 1fr} .card img{aspect-ratio:1/1;object-fit:cover}}
+    @media (max-width:600px){.grid{grid-template-columns:1fr} .topbar{gap:8px} nav ul{gap:12px}}
   </style>
 </head>
 <body>
   <header>
     <div class="wrap topbar">
       <div class="brand">
-        <img src="logo.jpg" alt="Le creazioni di Dania" style="height:50px;border-radius:8px;object-fit:cover"/>
+        <img src="logo.jpg" alt="Le creazioni di Dania" style="height:50px;border-radius:8px;object-fit:cover"/ loading="lazy">
         <div>
           <div style="font-weight:700;color:var(--brand)">Le creazioni di Dania</div>
           <div style="font-size:12px;color:#7a7a7a">Cucito fatto a mano</div>
@@ -203,35 +204,84 @@
     // === DATI E RENDERING PRODOTTI ===
     const paypalBusiness = 'lecreazionididania@gmail.com';
     const products = [
-      {
-        name: 'Pochette “Oggi mordo”',
-        price: 18.00,
-        img: 'oggi-mordo.jpg',
-        desc: 'Pochette in tessuto a righe verde e panna con scritta ricamata “oggi mordo” in rosso. Zip bianca, foderata. Ideale per trucchi o piccoli accessori.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Pochette “Nel dubbio polemizzo”',
-        price: 18.00,
-        img: 'nel-dubbio-polemizzo.jpg',
-        desc: 'Pochette in tessuto a righe grigio e panna con scritta ricamata “nel dubbio polemizzo” in rosso. Zip gialla, foderata.',
-        tag: 'Fatto a mano'
-      },
-      {
-        name: 'Porta-uncinetti / lavori',
-        price: 22.00,
-        img: 'porta-uncinetti.jpg',
-        desc: 'Organizer arrotolabile lilla con tasca zip e alloggi per utensili. Chiusura a bottone, perfetto in viaggio.',
-        tag: 'Nuovo'
-      }
-    ];
+  {
+    "name": "Pochette “Oggi mordo”",
+    "price": 18.0,
+    "img": "img/oggi-mordo2.jpg",
+    "desc": "Pochette in cotone a righe verde e panna con ricamo “OGGI MORDO” in rosso, zip chiara e fodera interna. Ideale per trucchi e piccoli accessori.",
+    "tag": "Fatto a mano"
+  },
+  {
+    "name": "Pochette “Nata per sbuffare”",
+    "price": 18.0,
+    "img": "img/nata-per-sbuffare.jpg",
+    "desc": "Pochette in cotone a righe verde e panna con ricamo “NATA PER SBUFFARE”, zip coordinata e fodera interna.",
+    "tag": "Best seller"
+  },
+  {
+    "name": "Pochette “Tonica come il gin”",
+    "price": 18.0,
+    "img": "img/tonica-come-il-gin.jpg",
+    "desc": "Pochette in cotone a righe grigio e panna con ricamo “TONICA (COME IL GIN)”, laccetto e zip coordinati.",
+    "tag": "Fatto a mano"
+  },
+  {
+    "name": "Porta spazzolino da viaggio – Pirati",
+    "price": 14.0,
+    "img": "img/spazzolino.jpg",
+    "desc": "Astuccio portaspazzolino in cotone fantasia pirati: tre scomparti interni, chiusura con bottoni a pressione, lavabile.",
+    "tag": "Bimbi"
+  },
+  {
+    "name": "Porta spazzolino da viaggio – Variante 2",
+    "price": 14.0,
+    "img": "img/spazzolino1.jpg",
+    "desc": "Astuccio portaspazzolino in cotone fantasia: organizzazione interna con tre scomparti e chiusura a pressione.",
+    "tag": "Bimbi"
+  },
+  {
+    "name": "Astuccio doppia zip – Pirati",
+    "price": 15.0,
+    "img": "img/astuccio.jpg",
+    "desc": "Astuccio piatto in cotone fantasia pirati con doppia cerniera. Perfetto per colori, giochi o piccoli accessori.",
+    "tag": "Novità"
+  },
+  {
+    "name": "Coprilibretto sanitario – Modello A",
+    "price": 22.0,
+    "img": "img/A.jpg",
+    "desc": "Copertina per libretto sanitario in tessuto morbido con interno in cotone fantasia; chiusura a bottone.",
+    "tag": "Bimbi"
+  },
+  {
+    "name": "Coprilibretto sanitario – Modello B",
+    "price": 22.0,
+    "img": "img/B.jpg",
+    "desc": "Copertina per libretto sanitario in tessuto morbido con interno fantasia stelle/orsetti; chiusura a bottone.",
+    "tag": "Bimbi"
+  },
+  {
+    "name": "Coprilibretto sanitario – Modello C",
+    "price": 22.0,
+    "img": "img/C.jpg",
+    "desc": "Copertina per libretto sanitario in tessuto morbido, dettagli curati e chiusura a bottone.",
+    "tag": "Bimbi"
+  },
+  {
+    "name": "Coprilibretto sanitario – Modello D",
+    "price": 22.0,
+    "img": "img/D.jpg",
+    "desc": "Copertina per libretto sanitario con interno in cotone fantasia; pratica e resistente, chiusura a bottone.",
+    "tag": "Bimbi"
+  }
+];
 
     const grid = document.getElementById('product-grid');
     products.forEach(p=>{
       const card = document.createElement('article');
       card.className='card';
       card.innerHTML = `
-        <img src="${p.img}" alt="${p.name}" />
+        <img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async" />
         <div class="body">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <strong>${p.name}</strong>
