@@ -231,7 +231,9 @@
     function acceptCookies(){localStorage.setItem('cookie_ok','1');cn.style.display='none'}
 
     // === DATI E RENDERING PRODOTTI ===
-    const paypalBusiness = 'dania.tiberi@gmail.com';
+    const paypalEmail = 'dania.tiberi@gmail.com';
+    const paypalMerchantId = '';       // ← qui incolla il tuo Merchant ID
+    const paypalBusiness = paypalMerchantId || paypalEmail;
     const PAYPAL_PREFIX = 'Ordine Dania – ';
     const SHIPPING_FLAT = 6.90;
     const SHIPPING_FREE_THRESHOLD = 59.00;
