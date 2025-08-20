@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Le creazioni di Dania — Cucito fatto a mano</title>
-  <meta name="description" content="Prodotti di cucito fatti a mano: accessori, pochette, organizer e idee regalo personalizzate." />
+  <title>Riepilogo Ordini — Le creazioni di Dania</title>
+  <meta name="description" content="Pagina carrello e riepilogo ordini con pagamento PayPal e Satispay. Supporto galleria immagini per articolo." />
   <link rel="icon" href="logo.jpg" type="image/jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
   <style>
     :root{--maxw:1100px;--c1:#222;--c2:#555;--brand:#c24d3c;--brand2:#ffe6dc;--bg:#faf8fb}
     *{box-sizing:border-box}
-    body{margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; color:var(--c1); background:var(--bg)}
+    body{margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;color:var(--c1);background:var(--bg)}
     a{color:var(--brand);text-decoration:none}
     img{max-width:100%;display:block}
     header{position:sticky;top:0;background:#fff7;backdrop-filter:saturate(150%) blur(10px);border-bottom:1px solid #eee;z-index:10}
@@ -24,7 +24,6 @@
     .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--brand);color:white;background:var(--brand);transition:.2s}
     .btn:hover{filter:brightness(0.95)}
     .btn.satispay{background:#e53b3b;border-color:#e53b3b;color:#fff}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
     .btn.outline{background:transparent;color:var(--brand)}
     .hero{display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;align-items:center;padding:28px 0}
     .hero h1{font-size:clamp(28px,3.6vw,42px);margin:0 0 8px;color:var(--brand)}
@@ -44,8 +43,26 @@
     .legal{font-size:12px;color:#777}
     .notice{position:fixed;inset:auto 12px 12px 12px;background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 16px rgba(0,0,0,.05)}
     .notice button{margin-left:auto}
+    .cart-badge{display:inline-flex;align-items:center;gap:8px}
+    .bubble{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--brand);color:#fff;font-size:12px}
+
+    /* Galleria immagini per articolo */
+    .gallery{position:relative;background:#fff}
+    .gallery-main{aspect-ratio: 4/3; width:100%; object-fit:cover}
+    .thumbs{display:flex;gap:8px;padding:10px;overflow:auto;border-top:1px solid #f0f0f0}
+    .thumbs img{width:56px;height:56px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer;flex:0 0 auto}
+    .thumbs img.active{border-color:var(--brand)}
+
+    /* Carrello */
+    #carrello table{width:100%;border-collapse:collapse}
+    #carrello th,#carrello td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+    #carrello .qty{width:68px;padding:8px;border:1px solid #ddd;border-radius:8px}
+    #totali{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px}
+    #totali .card{padding:14px}
+    .right{text-align:right}
+
     @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.footercols{grid-template-columns:1fr 1fr}}
-    @media (max-width:600px){.grid{grid-template-columns:1fr}}
+    @media (max-width:600px){.grid{grid-template-columns:1fr} #totali{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -61,13 +78,11 @@
       <nav>
         <ul>
           <li><a href="#prodotti">Prodotti</a></li>
-          <li><a href="#personalizza">Personalizza</a></li>
-          <li><a href="#spedizioni">Spedizioni</a></li>
-          <li><a href="#contatti">Contatti</a></li>
+          <li><a href="#carrello" id="go-cart">Carrello <span class="bubble" id="cart-count">0</span></a></li>
         </ul>
       </nav>
-      <div>
-        <a class="btn outline" href="#personalizza">Richiedi preventivo</a>
+      <div class="cart-badge">
+        <a class="btn outline" href="#carrello">Vai al riepilogo</a>
       </div>
     </div>
   </header>
@@ -76,88 +91,84 @@
     <section class="hero">
       <div>
         <span class="badge">100% fatto a mano in Italia</span>
-        <h1>Accessori e idee regalo artigianali</h1>
-        <p class="muted">Pochette, organizer e accessori in tessuto, anche personalizzati con nome ricamato.</p>
-        <a href="#prodotti" class="btn">Scopri i prodotti</a>
+        <h1>Ordina con PayPal o Satispay</h1>
+        <p class="muted">Aggiungi i prodotti al carrello, rivedi il riepilogo e completa il pagamento in sicurezza.</p>
+        <a href="#prodotti" class="btn">Sfoglia i prodotti</a>
       </div>
       <div>
         <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop" alt="Set da cucito artigianale" />
       </div>
     </section>
 
+    <!-- PRODOTTI -->
     <section id="prodotti" class="section">
       <h2>In vetrina</h2>
       <div class="grid" id="product-grid"></div>
       <div class="banner" style="margin-top:16px">
-        💡 <strong>Personalizzazioni</strong>: vuoi un nome ricamato o una misura diversa? Vai alla sezione <a href="#personalizza">Personalizza</a> e compila il modulo.
+        💡 <strong>Galleria foto</strong>: ogni articolo può avere più immagini. Clicca le miniatura per vederle. Aggiungi al carrello con la quantità desiderata.
       </div>
     </section>
 
-    <section id="personalizza" class="section" novalidate>
-      <h2>Personalizza il tuo prodotto</h2>
-      <p class="muted">Inserisci la richiesta, ti risponderemo con un preventivo in 24h.</p>
-      <form action="https://formspree.io/f/movlbejp" method="POST" class="card" style="padding:16px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <label>Nome e cognome<br/><input name="nome" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
-          <label>Email<br/><input type="email" name="email" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-          <label>Prodotto<br/>
-            <select name="prodotto" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px">
-              <option>Pochette</option>
-              <option>Organizer</option>
-              <option>Altro</option>
-            </select>
-          </label>
-          <label>Budget indicativo<br/><input name="budget" placeholder="Es. 20 €" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/></label>
-        </div>
-        
-        <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px">
-          <label>Telefono<br/>
-            <input type="tel" name="telefono" required placeholder="+39 3XX XXX XXXX"
-                   inputmode="tel"
-                   pattern="[0-9+().\s-]{8,20}"
-                   style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/>
-            <small id="phone-error" style="display:none;color:#c24d3c">Inserisci un numero valido (es. +39 3XX XXX XXXX).</small>
-          </label>
-        </div>
-    
-        <label style="display:block;margin-top:12px">Dettagli richiesta<br/>
-          <textarea name="dettagli" rows="4" placeholder="Misure, colori, nome da ricamare…" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"></textarea>
-        </label>
-        <div style="display:flex;gap:10px;align-items:center;margin-top:12px">
-          <input type="checkbox" id="privacy" required />
-          <label for="privacy" class="muted" style="font-size:12px">Ho letto e accetto la <a href="#privacy" onclick="openModal('privacy-modal');return false;">Privacy Policy</a></label>
-        </div>
-        <small id="privacy-error" style="display:none;color:#c24d3c">Per continuare devi accettare la Privacy Policy.</small>
-        <button class="btn" style="margin-top:12px;width:max-content">Invia richiesta</button>
-  <p id="form-status" class="muted" style="margin-top:8px"></p>
-      </form>
-    </section>
+    <!-- CARRELLO / RIEPILOGO -->
+    <section id="carrello" class="section">
+      <h2>Riepilogo ordine</h2>
+      <div id="empty-cart" class="card" style="padding:16px;display:none">Il carrello è vuoto. Vai alla sezione <a href="#prodotti">Prodotti</a> per iniziare.</div>
 
-    <section id="spedizioni" class="section">
-      <h2>Spedizioni & Resi</h2>
-      <div class="grid">
-        <div class="card" style="padding:14px">
-          <strong>Tempi</strong>
-          <p class="muted">Produzione: 3–5 giorni lavorativi • Spedizione: 24/48h con corriere tracciato.</p>
-        </div>
-        <div class="card" style="padding:14px">
-          <strong>Costi</strong>
-          <p class="muted">Italia: €6,90 • Gratis sopra €59. Ritiro locale gratuito su appuntamento.</p>
-        </div>
-        <div class="card" style="padding:14px">
-          <strong>Resi</strong>
-          <p class="muted">Hai 14 giorni per il reso (esclusi prodotti personalizzati, salvo difetti). Contattaci per assistenza.</p>
+      <div id="cart-wrap" style="display:none">
+        <div class="card" style="padding:0">
+          <div style="padding:10px 14px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center">
+            <strong>I tuoi articoli</strong>
+            <button id="clear-cart" class="btn outline" type="button">Svuota</button>
+          </div>
+          <div style="padding:10px 14px">
+            <div style="overflow:auto">
+              <table aria-label="Riepilogo carrello">
+                <thead>
+                  <tr>
+                    <th>Articolo</th>
+                    <th>Prezzo</th>
+                    <th>Q.tà</th>
+                    <th class="right">Subtotale</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="cart-tbody"></tbody>
+              </table>
+            </div>
+
+            <div id="totali">
+              <div class="card">
+                <strong>Coupon</strong>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                  <input id="coupon-input" placeholder="Codice sconto" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:10px"/>
+                  <button id="apply-coupon" class="btn" type="button">Applica</button>
+                </div>
+                <small class="muted">Esempio: <code>DANIA10</code> (−10%).</small>
+                <div id="coupon-msg" class="muted" style="margin-top:8px"></div>
+              </div>
+
+              <div class="card">
+                <strong>Totali</strong>
+                <div style="display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:8px">
+                  <div class="muted">Subtotale</div><div class="right" id="subtot">€ 0,00</div>
+                  <div class="muted">Sconto</div><div class="right" id="sconto">€ 0,00</div>
+                  <div class="muted">Spedizione</div><div class="right" id="sped">€ 0,00</div>
+                  <div style="border-top:1px dashed #e5e5e5;margin-top:6px"></div><div style="border-top:1px dashed #e5e5e5;margin-top:6px"></div>
+                  <div><strong>Totale</strong></div><div class="right"><strong id="totale">€ 0,00</strong></div>
+                </div>
+                <div style="margin-top:10px" class="muted">Spedizione gratis sopra €59, altrimenti €6,90.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px">
+              <button id="pay-paypal" class="btn" type="button">Paga con PayPal</button>
+              <button id="pay-satispay" class="btn satispay" type="button">Paga con Satispay</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
-
-    <section id="contatti" class="section">
-      <h2>Contatti</h2>
-      <p class="muted">Scrivici su <a href="https://wa.me/393454895450" target="_blank">WhatsApp</a> o via email: <a href="mailto:dania.tiberi@gmail.com">dania.tiberi@gmail.com</a>. Seguici su <a href="https://www.instagram.com/lecreazionididania" target="_blank">Instagram</a>.</p>
-    </section>
-</main>
+  </main>
 
   <footer>
     <div class="wrap footercols">
@@ -198,20 +209,20 @@
     <button class="btn outline" onclick="closeModal('cookie-modal')">Chiudi</button>
   </dialog>
 
-  <dialog id="satispay-modal" style="max-width:520px;width:92%">
+  <dialog id="satispay-modal" style="max-width:560px;width:92%">
     <h3>Paga con Satispay</h3>
-    <p class="muted">Scansiona il QR con l'app Satispay oppure apri direttamente l'app.</p>
-<p class="muted" style="margin-top:-6px"><strong>Intestatario:</strong> Dania Tiberi — <a href="tel:+393454895450">+39 345 489 5450</a></p>
+    <p class="muted">Scansiona il QR con l'app Satispay oppure apri direttamente l'app. Inserisci l'importo totale mostrato.</p>
+    <p class="muted" style="margin-top:-6px"><strong>Intestatario:</strong> Dania Tiberi — <a href="tel:+393454895450">+39 345 489 5450</a></p>
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
       <img id="satispay-qr" src="" alt="QR Satispay" style="width:220px;height:220px;border:1px solid #eee;border-radius:12px;padding:8px;background:#fff"/>
       <div>
         <div id="satispay-descr" class="muted" style="margin-bottom:10px"></div>
+        <div style="font-weight:700">Totale: <span id="satispay-total"></span></div>
         <a id="satispay-open" href="#" target="_blank" rel="noopener" class="btn satispay">Apri Satispay</a>
         <button class="btn outline" onclick="closeModal('satispay-modal')" style="margin-left:8px">Chiudi</button>
       </div>
     </div>
   </dialog>
-
 
   <!-- Cookie notice -->
   <div class="notice" id="cookie-notice" role="dialog" aria-live="polite" aria-label="Informativa cookie" style="display:none">
@@ -220,219 +231,345 @@
   </div>
 
   <script>
-    // Footer year
-    document.getElementById('year').textContent=new Date().getFullYear();
-    // Modals helpers
-    function openModal(id){document.getElementById(id).showModal()} 
-    function closeModal(id){document.getElementById(id).close()}
-    // Cookie notice
-    const cn= document.getElementById('cookie-notice');
-    if(!localStorage.getItem('cookie_ok')){cn.style.display='flex'}
-    function acceptCookies(){localStorage.setItem('cookie_ok','1');cn.style.display='none'}
-
-    // === DATI E RENDERING PRODOTTI ===
+    // === CONFIG ===
     const paypalEmail = 'dania.tiberi@gmail.com';
-    const paypalMerchantId = '';       // ← qui incolla il tuo Merchant ID
-    const paypalBusiness = paypalMerchantId || paypalEmail;
+    const paypalMerchantId = '';
+    const paypalBusiness = paypalMerchantId || paypalEmail; // usa Merchant ID se disponibile
     const PAYPAL_PREFIX = 'Ordine Dania – ';
+
     const SHIPPING_FLAT = 6.90;
     const SHIPPING_FREE_THRESHOLD = 59.00;
+
+    // Codici sconto: percentuale o fisso in €
     const COUPONS = [
       { code: 'DANIA10', type: 'percent', value: 10 },
       // { code: 'WELCOME5', type: 'fixed', value: 5 },
     ];
-    // Inserisci qui il tuo link Pay-by-Link Satispay (es. https://satispay.me/TUO_HANDLE)
+
+    // Satispay: link pay-by-link del profilo business
     const satispayLink = 'https://satispay.me/daniatiberi';
+
+    // --- Cookie notice
+    const cn = document.getElementById('cookie-notice');
+    if(!localStorage.getItem('cookie_ok')){cn.style.display='flex'}
+    function acceptCookies(){localStorage.setItem('cookie_ok','1');cn.style.display='none'}
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function openModal(id){document.getElementById(id).showModal()} 
+    function closeModal(id){document.getElementById(id).close()}
+
+    // === DATI PRODOTTI (multi-foto supporto: images[]) ===
     const products = [
-  {
-    "name": "Astuccio zip – Pirati",
-    "price": 15.0,
-    "img": "astuccio.jpg",
-    "desc": "Bustina piatta in cotone fantasia pirati con cerniera. Ideale per colori, giochi o piccoli accessori,Lavabile.",
-    "tag": "Novità"
-  },
-  {
-    "name": "Porta gioie da viaggi e accessori per capelli",
-    "price": 22.0,
-    "img": "B.jpg",
-    "desc": "Porta gioie da viaggi e accessori per capelli in tessuto doppia garza con inserto centrale in cotone fantasia,Lavabile.",
-    "tag": "Bimbi"
-  },
-  {
-    "name": "Pochette “Nata per sbuffare”",
-    "price": 20.0,
-    "img": "nata-per-sbuffare.jpg",
-    "desc": "Pochette in cotone a righe verde/panna con ricamo “NATA PER SBUFFARE”, zip rossa e fodera interna,Lavabile.",
-    "tag": "Best seller"
-  },
-  {
-    "name": "Pochette “Nel dubbio polemizzo”",
-    "price": 20.0,
-    "img": "nel-dubbio-polemizzo.jpg",
-    "desc": "Pochette in cotone a righe grigio/panna con ricamo “NEL DUBBIO POLEMIZZO”, zip gialla e fodera interna,Lavabile.",
-    "tag": "Fatto a mano"
-  },
-  {
-    "name": "Pochette “Oggi mordo” (verde)",
-    "price": 20.0,
-    "img": "oggi-mordo.jpg",
-    "desc": "Pochette in cotone a righe verde/panna con ricamo “OGGI MORDO”. Zip chiara e fodera interna,Lavabile.",
-    "tag": "Fatto a mano"
-  },
-  {
-    "name": "Pochette “Oggi mordo” (grigia)",
-    "price": 20.0,
-    "img": "oggi-mordo2.jpg",
-    "desc": "Pochette in cotone a righe grigio/panna con ricamo “OGGI MORDO”, zip rossa e fodera interna,Lavabile.",
-    "tag": "Fatto a mano"
-  },
-  {
-    "name": "Porta gioie da viaggio e accessori capelli",
-    "price": 22.0,
-    "img": "porta-uncinetti.jpg",
-    "desc": "Organizer arrotolabile con tasca a zip e alloggi per utensili. Chiusura a bottone, pratico da viaggio,Lavabile.",
-    "tag": "Novità"
-  },
-  {
-    "name": "Porta spazzolino da viaggio – Pirati",
-    "price": 15.0,
-    "img": "spazzolino.jpg",
-    "desc": "Astuccio portaspazzolino bimbi in cotone fantasia pirati: tre scomparti interni e chiusura con bottoni a pressione. Lavabile.",
-    "tag": "Bimbi"
-  },
-  {
-    "name": "Porta spazzolino – Variante compatta",
-    "price": 15.0,
-    "img": "spazzolino1.jpg",
-    "desc": "Porta spazzolino compatto in tessuto fantasia con alloggi interni e chiusura a pressione. Perfetto da infilare nello zaino, Lavabile.",
-    "tag": "Bimbi"
-  },
-  {
-    "name": "Pochette “Tonica come il gin”",
-    "price": 20.0,
-    "img": "tonica-come-il-gin.jpg",
-    "desc": "Pochette in cotone a righe grigio/panna con ricamo “TONICA (COME IL GIN)”. Zip rossa e pratico laccetto,Lavabile.",
-    "tag": "Fatto a mano"
-  }
-];
+      {
+        id: 'astuccio-pirati',
+        name: 'Astuccio zip – Pirati',
+        price: 15.0,
+        images: ['astuccio.jpg','astuccio-2.jpg','astuccio-3.jpg'],
+        desc: 'Bustina piatta in cotone fantasia pirati con cerniera. Ideale per colori, giochi o piccoli accessori. Lavabile.',
+        tag: 'Novità'
+      },
+      {
+        id: 'porta-gioie-viaggio',
+        name: 'Porta gioie da viaggi e accessori per capelli',
+        price: 22.0,
+        images: ['B.jpg','B-2.jpg'],
+        desc: 'Porta gioie da viaggi e accessori per capelli in tessuto doppia garza con inserto centrale in cotone fantasia. Lavabile.',
+        tag: 'Bimbi'
+      },
+      {
+        id: 'nata-per-sbuffare',
+        name: 'Pochette “Nata per sbuffare”',
+        price: 20.0,
+        images: ['nata-per-sbuffare.jpg','nata-per-sbuffare-2.jpg'],
+        desc: 'Pochette in cotone a righe verde/panna con ricamo “NATA PER SBUFFARE”, zip rossa e fodera interna. Lavabile.',
+        tag: 'Best seller'
+      },
+      {
+        id: 'nel-dubbio-polemizzo',
+        name: 'Pochette “Nel dubbio polemizzo”',
+        price: 20.0,
+        images: ['nel-dubbio-polemizzo.jpg','nel-dubbio-polemizzo-2.jpg'],
+        desc: 'Pochette in cotone a righe grigio/panna con ricamo “NEL DUBBIO POLEMIZZO”, zip gialla e fodera interna. Lavabile.',
+        tag: 'Fatto a mano'
+      },
+      {
+        id: 'oggi-mordo-verde',
+        name: 'Pochette “Oggi mordo” (verde)',
+        price: 20.0,
+        images: ['oggi-mordo.jpg','oggi-mordo-2.jpg'],
+        desc: 'Pochette in cotone a righe verde/panna con ricamo “OGGI MORDO”. Zip chiara e fodera interna. Lavabile.',
+        tag: 'Fatto a mano'
+      },
+      {
+        id: 'oggi-mordo-grigia',
+        name: 'Pochette “Oggi mordo” (grigia)',
+        price: 20.0,
+        images: ['oggi-mordo2.jpg','oggi-mordo2-2.jpg'],
+        desc: 'Pochette in cotone a righe grigio/panna con ricamo “OGGI MORDO”, zip rossa e fodera interna. Lavabile.',
+        tag: 'Fatto a mano'
+      },
+      {
+        id: 'porta-uncinetti',
+        name: 'Porta gioie da viaggio e accessori capelli',
+        price: 22.0,
+        images: ['porta-uncinetti.jpg','porta-uncinetti-2.jpg'],
+        desc: 'Organizer arrotolabile con tasca a zip e alloggi per utensili. Chiusura a bottone, pratico da viaggio. Lavabile.',
+        tag: 'Novità'
+      },
+      {
+        id: 'spazzolino-pirati',
+        name: 'Porta spazzolino da viaggio – Pirati',
+        price: 15.0,
+        images: ['spazzolino.jpg','spazzolino-2.jpg'],
+        desc: 'Astuccio portaspazzolino bimbi in cotone fantasia pirati: tre scomparti interni e chiusura con bottoni a pressione. Lavabile.',
+        tag: 'Bimbi'
+      },
+      {
+        id: 'spazzolino-compatto',
+        name: 'Porta spazzolino – Variante compatta',
+        price: 15.0,
+        images: ['spazzolino1.jpg','spazzolino1-2.jpg'],
+        desc: 'Porta spazzolino compatto in tessuto fantasia con alloggi interni e chiusura a pressione. Perfetto da zaino. Lavabile.',
+        tag: 'Bimbi'
+      },
+      {
+        id: 'tonica-gin',
+        name: 'Pochette “Tonica come il gin”',
+        price: 20.0,
+        images: ['tonica-come-il-gin.jpg','tonica-come-il-gin-2.jpg'],
+        desc: 'Pochette in cotone a righe grigio/panna con ricamo “TONICA (COME IL GIN)”. Zip rossa e pratico laccetto. Lavabile.',
+        tag: 'Fatto a mano'
+      }
+    ];
 
-    function paySatispay(name, price){
-      const descr = `${name} — € ${price.toFixed(2)}`;
-      const link = `${satispayLink}`;
-      const qr = 'https://quickchart.io/qr?margin=2&size=220&text=' + encodeURIComponent(link);
-      const modal = document.getElementById('satispay-modal');
-      document.getElementById('satispay-qr').src = qr;
-      document.getElementById('satispay-open').href = link;
-      document.getElementById('satispay-descr').textContent = descr;
-      modal.showModal();
-    }
-
+    // === RENDER PRODOTTI (con galleria immagini) ===
     const grid = document.getElementById('product-grid');
-    products.forEach(p=>{
-      const card = document.createElement('article');
-      card.className='card';
-      card.innerHTML = `
-        <img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async" />
-        <div class="body">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong>${p.name}</strong>
-            <span class="pill">${p.tag||''}</span>
+    function renderProducts(){
+      grid.innerHTML = '';
+      products.forEach(p=>{
+        const card = document.createElement('article');
+        card.className='card';
+        const firstImg = (p.images && p.images.length? p.images[0]: 'placeholder.jpg');
+        card.innerHTML = `
+          <div class="gallery">
+            <img class="gallery-main" src="${firstImg}" alt="${p.name}" loading="lazy" decoding="async" />
+            <div class="thumbs"></div>
           </div>
-          <div class="muted">${p.desc}</div>
-          <div class="price">€ ${p.price.toFixed(2)} <span class="total-inline">• Totale: € ${p.price.toFixed(2)}</span></div>
-          <div class="actions">
-              <div style="display:flex;align-items:center;gap:8px;margin-right:auto">
-                <label class="muted" style="font-size:12px">Q.tà</label>
-                <input type="number" class="qty" value="1" min="1" step="1" style="width:64px;padding:8px;border:1px solid #ddd;border-radius:8px">
-                <small class="muted total" style="font-size:12px">Totale: € ${p.price.toFixed(2)}</small>
-              </div>
-              <form class="pp" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                <input type="hidden" name="cmd" value="_xclick">
-                <input type="hidden" name="business" value="${paypalBusiness}">
-                <input type="hidden" name="item_name" value="${PAYPAL_PREFIX}${p.name} (x1)">
-                <input type="hidden" name="amount" value="${p.price.toFixed(2)}">
-                <input type="hidden" name="quantity" value="1"><input type="hidden" name="quantity" value="1">
-                <input type="hidden" name="currency_code" value="EUR">
-                <input type="hidden" name="quantity" value="1">
-                <input type="hidden" name="shipping" value="0.00">
-          <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="btn">Acquista</button>
-              </form>
-              <button type="button" class="btn satispay pay-satispay">Satispay</button>
+          <div class="body">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong>${p.name}</strong>
+              <span class="pill">${p.tag||''}</span>
+            </div>
+            <div class="muted">${p.desc}</div>
+            <div class="price">€ ${p.price.toFixed(2)}</div>
+            <div class="actions" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <label class="muted" style="font-size:12px">Q.tà</label>
+              <input type="number" class="qty" value="1" min="1" step="1" style="width:64px;padding:8px;border:1px solid #ddd;border-radius:8px">
+              <button type="button" class="btn add-cart">Aggiungi al carrello</button>
             </div>
           </div>`;
-      const sb = card.querySelector('.pay-satispay'); if(sb){ sb.addEventListener('click', ()=> paySatispay(p.name, p.price)); }
-      // qty -> update PayPal item_name, amount and total
-      const qty = card.querySelector('.qty');
-      const form = card.querySelector('form.pp');
-      const totalEl = card.querySelector('.total');
-      function upd(){
-        const q = Math.max(1, parseInt(qty.value||'1',10));
-        qty.value = q;
-        form.querySelector('input[name="quantity"]').value = q;
-        form.querySelector('input[name="item_name"]').value = `${PAYPAL_PREFIX}${p.name} (x${q})`;
-        const tot = (p.price * q).toFixed(2);
-        form.querySelector('input[name="amount"]').value = tot;
-        if(totalEl) totalEl.textContent = `Totale: € ${tot}`;
-      }
-      qty?.addEventListener('input', upd);
-      upd();
-      grid.appendChild(card);
-    });
-  </script>
-
-<script>
-(function () {
-  const form = document.getElementById('quote-form');
-  const status = document.getElementById('form-status');
-  if (!form || !status) return;
-  form.addEventListener('submit', async (e) => {
-    const phone = form.querySelector('input[name="telefono"]');
-    const privacy = document.getElementById('privacy');
-    const phoneErr = document.getElementById('phone-error');
-    const privacyErr = document.getElementById('privacy-error');
-
-    // Validazione Telefono (8-20 caratteri permessi + cifre/spazi/+/.())
-    const raw = (phone?.value || '').trim();
-    const ok = /^[0-9+().\s-]{8,20}$/.test(raw) && (raw.replace(/\D/g,'').length >= 8);
-    if (!ok) {
-      e.preventDefault();
-      if (phoneErr) phoneErr.style.display = 'inline';
-      if (privacyErr) privacyErr.style.display = 'none';
-      phone?.focus();
-      return;
-    } else {
-      if (phoneErr) phoneErr.style.display = 'none';
-    }
-
-    // Validazione Privacy obbligatoria
-    if (!privacy?.checked) {
-      e.preventDefault();
-      if (privacyErr) privacyErr.style.display = 'inline';
-      return;
-    } else {
-      if (privacyErr) privacyErr.style.display = 'none';
-    }
-
-    e.preventDefault();
-    status.textContent = 'Invio in corso…';
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
+        const thumbs = card.querySelector('.thumbs');
+        const main = card.querySelector('.gallery-main');
+        (p.images||[]).forEach((src,i)=>{
+          const t = document.createElement('img');
+          t.src = src; t.alt = p.name + ' miniatura ' + (i+1);
+          if(i===0) t.classList.add('active');
+          t.addEventListener('click',()=>{
+            main.src = src;
+            thumbs.querySelectorAll('img').forEach(el=>el.classList.remove('active'));
+            t.classList.add('active');
+          });
+          thumbs.appendChild(t);
+        });
+        const qty = card.querySelector('.qty');
+        card.querySelector('.add-cart').addEventListener('click',()=>{
+          const q = Math.max(1, parseInt(qty.value||'1',10));
+          addToCart(p.id, q);
+        });
+        grid.appendChild(card);
       });
-      if (res.ok) {
-        window.location.href = 'grazie.html';
-      } else {
-        status.textContent = 'Ops, invio non riuscito. Riprova o scrivi a dania.tiberi@gmail.com.';
-      }
-    } catch (err) {
-      status.textContent = 'Errore di rete. Controlla la connessione e riprova.';
     }
-  });
-})();
-</script>
 
+    // === CARRELLO (localStorage) ===
+    const CART_KEY = 'cart-dania-v1';
+    let cart = loadCart();
+
+    function loadCart(){
+      try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {items:[], coupon:null}; }catch(e){ return {items:[], coupon:null}; }
+    }
+    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+
+    function findProduct(id){ return products.find(p=>p.id===id); }
+
+    function addToCart(id, qty){
+      const item = cart.items.find(i=>i.id===id);
+      if(item){ item.qty += qty; } else { cart.items.push({id, qty}); }
+      saveCart();
+      renderCart();
+      flashCart();
+    }
+
+    function removeFromCart(id){
+      cart.items = cart.items.filter(i=>i.id!==id);
+      saveCart();
+      renderCart();
+    }
+
+    function updateQty(id, qty){
+      const it = cart.items.find(i=>i.id===id);
+      if(it){ it.qty = Math.max(1, qty|0); saveCart(); renderCart(); }
+    }
+
+    function clearCart(){ cart = {items:[], coupon:null}; saveCart(); renderCart(); }
+
+    function fmtEuro(n){ return '€ ' + n.toFixed(2).replace('.',','); }
+
+    function computeTotals(){
+      const lines = cart.items.map(i=>{
+        const p = findProduct(i.id); return { id:i.id, name:p.name, price:p.price, qty:i.qty, subtotal: p.price*i.qty };
+      });
+      const subtotal = lines.reduce((s,l)=>s+l.subtotal,0);
+      let discount = 0; let coupon = null;
+      if(cart.coupon){
+        coupon = COUPONS.find(c=>c.code.toUpperCase()===cart.coupon.toUpperCase());
+        if(coupon){
+          if(coupon.type==='percent') discount = subtotal * (coupon.value/100);
+          if(coupon.type==='fixed') discount = Math.min(subtotal, coupon.value);
+        }
+      }
+      const afterDisc = Math.max(0, subtotal - discount);
+      const shipping = afterDisc >= SHIPPING_FREE_THRESHOLD || afterDisc===0 ? 0 : SHIPPING_FLAT;
+      const total = afterDisc + shipping;
+      return {lines, subtotal, discount, shipping, total, coupon};
+    }
+
+    function renderCart(){
+      const {lines, subtotal, discount, shipping, total} = computeTotals();
+      const count = cart.items.reduce((s,i)=>s+i.qty,0);
+      document.getElementById('cart-count').textContent = count;
+
+      const empty = document.getElementById('empty-cart');
+      const wrap = document.getElementById('cart-wrap');
+      empty.style.display = count? 'none':'block';
+      wrap.style.display = count? 'block':'none';
+      if(!count) return;
+
+      const tb = document.getElementById('cart-tbody');
+      tb.innerHTML = '';
+      lines.forEach(l=>{
+        const p = findProduct(l.id);
+        const tr = document.createElement('tr');
+        const thumb = (p.images&&p.images[0])||'placeholder.jpg';
+        tr.innerHTML = `
+          <td>
+            <div style="display:flex;gap:10px;align-items:center">
+              <img src="${thumb}" alt="${l.name}" style="width:54px;height:54px;object-fit:cover;border-radius:8px;border:1px solid #eee"/>
+              <div>${l.name}</div>
+            </div>
+          </td>
+          <td>${fmtEuro(l.price)}</td>
+          <td>
+            <input type="number" min="1" step="1" value="${l.qty}" class="qty" data-id="${l.id}" />
+          </td>
+          <td class="right">${fmtEuro(l.subtotal)}</td>
+          <td class="right"><button class="btn outline rm" data-id="${l.id}">Rimuovi</button></td>
+        `;
+        tb.appendChild(tr);
+      });
+
+      // Bind qty & remove
+      tb.querySelectorAll('input.qty').forEach(inp=>{
+        inp.addEventListener('input',()=> updateQty(inp.dataset.id, Math.max(1, parseInt(inp.value||'1',10))) );
+      });
+      tb.querySelectorAll('button.rm').forEach(btn=>{
+        btn.addEventListener('click',()=> removeFromCart(btn.dataset.id));
+      });
+
+      document.getElementById('subtot').textContent = fmtEuro(subtotal);
+      document.getElementById('sconto').textContent = '− ' + fmtEuro(discount);
+      document.getElementById('sped').textContent = shipping? fmtEuro(shipping): 'Gratis';
+      document.getElementById('totale').textContent = fmtEuro(total);
+    }
+
+    function flashCart(){
+      const el = document.getElementById('cart-count');
+      el.animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:400});
+    }
+
+    // Coupon handling
+    document.addEventListener('click', (e)=>{
+      if(e.target && e.target.id==='apply-coupon'){
+        const code = (document.getElementById('coupon-input').value||'').trim();
+        const msg = document.getElementById('coupon-msg');
+        const found = COUPONS.find(c=>c.code.toUpperCase()===code.toUpperCase());
+        if(found){ cart.coupon = code; saveCart(); msg.textContent = `Coupon applicato: ${found.type==='percent'? ('−'+found.value+'%'): ('−€ '+found.value)}`; renderCart(); }
+        else { msg.textContent = 'Codice non valido.'; cart.coupon=null; saveCart(); renderCart(); }
+      }
+    });
+
+    // Pulsanti carrello
+    document.getElementById('clear-cart').addEventListener('click', clearCart);
+
+    // PayPal checkout (carrello multi-riga)
+    document.getElementById('pay-paypal').addEventListener('click', ()=>{
+      const {lines, discount, shipping, coupon} = computeTotals();
+      if(!lines.length) return;
+      const f = document.createElement('form');
+      f.action = 'https://www.paypal.com/cgi-bin/webscr';
+      f.method = 'post';
+      f.style.display = 'none';
+      f.innerHTML = '';
+      const fields = {
+        cmd: '_cart', upload: '1', business: paypalBusiness, currency_code: 'EUR', charset: 'utf-8',
+        custom: 'cart-' + Date.now()
+      };
+      Object.entries(fields).forEach(([k,v])=>{ const i=document.createElement('input'); i.type='hidden'; i.name=k; i.value=v; f.appendChild(i); });
+      // linee
+      lines.forEach((l,idx)=>{
+        const n = idx+1;
+        const map = {
+          ['item_name_'+n]: PAYPAL_PREFIX + l.name,
+          ['amount_'+n]: l.price.toFixed(2),
+          ['quantity_'+n]: String(l.qty)
+        };
+        Object.entries(map).forEach(([k,v])=>{ const i=document.createElement('input'); i.type='hidden'; i.name=k; i.value=v; f.appendChild(i); });
+      });
+      // sconto su carrello
+      if(coupon){
+        if(coupon.type==='percent'){
+          const i = document.createElement('input'); i.type='hidden'; i.name='discount_rate_cart'; i.value=String(coupon.value); f.appendChild(i);
+        } else if(coupon.type==='fixed'){
+          const i = document.createElement('input'); i.type='hidden'; i.name='discount_amount_cart'; i.value=discount.toFixed(2); f.appendChild(i);
+        }
+      }
+      // spedizione come handling_cart
+      if(shipping>0){ const i=document.createElement('input'); i.type='hidden'; i.name='handling_cart'; i.value=shipping.toFixed(2); f.appendChild(i); }
+
+      document.body.appendChild(f);
+      f.submit();
+    });
+
+    // Satispay checkout (mostra QR + totale)
+    document.getElementById('pay-satispay').addEventListener('click', ()=>{
+      const {lines, total} = computeTotals();
+      if(!lines.length) return;
+      const descr = lines.map(l=>`${l.name} x${l.qty}`).join(' • ');
+      const qr = 'https://quickchart.io/qr?margin=2&size=220&text=' + encodeURIComponent(satispayLink);
+      document.getElementById('satispay-qr').src = qr;
+      document.getElementById('satispay-open').href = satispayLink;
+      document.getElementById('satispay-descr').textContent = descr;
+      document.getElementById('satispay-total').textContent = fmtEuro(total);
+      openModal('satispay-modal');
+    });
+
+    // Navigazione
+    document.getElementById('go-cart').addEventListener('click',()=> setTimeout(renderCart,0));
+
+    // Init
+    renderProducts();
+    renderCart();
+  </script>
 </body>
 </html>
