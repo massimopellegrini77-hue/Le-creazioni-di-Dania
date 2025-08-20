@@ -572,5 +572,56 @@
     renderProducts();
     renderCart();
   </script>
+  (function () {
+  const form = document.getElementById('quote-form');
+  const status = document.getElementById('form-status');
+  if (!form || !status) return;
+  form.addEventListener('submit', async (e) => {
+    const phone = form.querySelector('input[name="telefono"]');
+    const privacy = document.getElementById('privacy');
+    const phoneErr = document.getElementById('phone-error');
+    const privacyErr = document.getElementById('privacy-error');
+
+    // Validazione Telefono (8-20 caratteri permessi + cifre/spazi/+/.())
+    const raw = (phone?.value || '').trim();
+    const ok = /^[0-9+().\s-]{8,20}$/.test(raw) && (raw.replace(/\D/g,'').length >= 8);
+    if (!ok) {
+      e.preventDefault();
+      if (phoneErr) phoneErr.style.display = 'inline';
+      if (privacyErr) privacyErr.style.display = 'none';
+      phone?.focus();
+      return;
+    } else {
+      if (phoneErr) phoneErr.style.display = 'none';
+    }
+
+    // Validazione Privacy obbligatoria
+    if (!privacy?.checked) {
+      e.preventDefault();
+      if (privacyErr) privacyErr.style.display = 'inline';
+      return;
+    } else {
+      if (privacyErr) privacyErr.style.display = 'none';
+    }
+
+    e.preventDefault();
+    status.textContent = 'Invio in corso…';
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        window.location.href = 'grazie.html';
+      } else {
+        status.textContent = 'Ops, invio non riuscito. Riprova o scrivi a dania.tiberi@gmail.com.';
+      }
+    } catch (err) {
+      status.textContent = 'Errore di rete. Controlla la connessione e riprova.';
+    }
+  });
+})();
+</script>
 </body>
 </html>
