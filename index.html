@@ -310,6 +310,13 @@
     const cn = document.getElementById('cookie-notice');
     if(!localStorage.getItem('cookie_ok')){cn.style.display='flex'}
     function acceptCookies(){localStorage.setItem('cookie_ok','1');cn.style.display='none'}
+    
+    // --- privacy e cookie
+    <nav class="legal-links">
+    <a href="/privacy-policy" title="Privacy Policy">Privacy Policy</a>
+    <span aria-hidden="true"> · </span>
+    <a href="/cookie-policy" title="Cookie Policy">Cookie Policy</a>
+    </nav>
 
     // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
