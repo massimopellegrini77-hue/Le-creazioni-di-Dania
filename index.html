@@ -251,7 +251,7 @@
   <!-- Modals -->
   <dialog id="privacy-modal" style="max-width:800px;width:90%">
     <h3>Privacy Policy (sintesi)</h3>
-    <p>Raccogliamo i dati strettamente necessari per evadere gli ordini e rispondere alle richieste. Titolare del trattamento: [Tuo Nome], [indirizzo], email: dania.tiberi@gmail.com. Puoi richiedere accesso/cancellazione dei dati in ogni momento.</p>
+    <p>Raccogliamo i dati strettamente necessari per evadere gli ordini e rispondere alle richieste. Titolare del trattamento: Dania Tiberi, Prato Vaiano, email: dania.tiberi@gmail.com. Puoi richiedere accesso/cancellazione dei dati in ogni momento.</p>
     <button class="btn outline" onclick="closeModal('privacy-modal')">Chiudi</button>
   </dialog>
   <dialog id="terms-modal" style="max-width:800px;width:90%">
@@ -267,7 +267,7 @@
 
   <dialog id="satispay-modal" style="max-width:560px;width:92%">
     <h3>Paga con Satispay</h3>
-    <p class="muted">Scansiona il QR con l'app Satispay oppure apri direttamente l'app. Inserisci l'importo totale mostrato.</p>
+    <p class="muted">Apri direttamente l'app. Inserisci l'importo totale mostrato.</p>
     <p class="muted" style="margin-top:-6px"><strong>Intestatario:</strong> Dania Tiberi — <a href="tel:+393454895450">+39 345 489 5450</a></p>
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
       <img id="satispay-qr" src="" alt="QR Satispay" style="width:220px;height:220px;border:1px solid #eee;border-radius:12px;padding:8px;background:#fff"/>
@@ -310,14 +310,7 @@
     const cn = document.getElementById('cookie-notice');
     if(!localStorage.getItem('cookie_ok')){cn.style.display='flex'}
     function acceptCookies(){localStorage.setItem('cookie_ok','1');cn.style.display='none'}
-    
-    // --- privacy e cookie
-    <nav class="legal-links">
-    <a href="/privacy-policy" title="Privacy Policy">Privacy Policy</a>
-    <span aria-hidden="true"> · </span>
-    <a href="/cookie-policy" title="Cookie Policy">Cookie Policy</a>
-    </nav>
-
+ 
     // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -386,16 +379,8 @@
         id: 'spazzolino-pirati',
         name: 'Porta spazzolino da viaggio – Pirati',
         price: 15.0,
-        images: ['spazzolino.jpg'],
+        images: ['spazzolino.jpg',spazzolino1.jpg],
         desc: 'Astuccio portaspazzolino bimbi in cotone fantasia pirati: tre scomparti interni e chiusura con bottoni a pressione. Lavabile.',
-        tag: 'Bimbi'
-      },
-      {
-        id: 'spazzolino-compatto',
-        name: 'Porta spazzolino – Variante compatta',
-        price: 15.0,
-        images: ['spazzolino1.jpg'],
-        desc: 'Porta spazzolino compatto in tessuto fantasia con alloggi interni e chiusura a pressione. Perfetto da zaino. Lavabile.',
         tag: 'Bimbi'
       },
       {
