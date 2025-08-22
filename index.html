@@ -64,16 +64,17 @@
     @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.footercols{grid-template-columns:1fr 1fr}}
     @media (max-width:600px){.grid{grid-template-columns:1fr} #totali{grid-template-columns:1fr}}
   
-/* --- AI Inject: Misure + Lightbox --- */
+/* === AI Inject: Misure + Lightbox === */
 .product-measures{margin-top:.5rem;padding:.4rem .6rem;border:1px dashed currentColor;border-radius:8px;font-size:.95em;display:inline-block;opacity:.9}
 .product-measures::before{content:"Misure: ";font-weight:600}
-.ai-lightbox-enabled img{cursor:zoom-in}
+.ai-lightbox-enabled img[data-lightbox], .ai-lightbox-enabled .gallery .gallery-main{cursor:zoom-in}
 #ai-lightbox-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:9999}
 #ai-lightbox-backdrop[open]{display:flex}
 #ai-lightbox-content{position:relative;max-width:90vw;max-height:90vh}
 #ai-lightbox-img{max-width:90vw;max-height:90vh;box-shadow:0 10px 30px rgba(0,0,0,.5);border-radius:12px}
 #ai-lightbox-close{position:absolute;top:-12px;right:-12px;width:36px;height:36px;border-radius:50%;border:none;background:#fff;color:#000;font-size:20px;line-height:36px;cursor:pointer}
 #ai-lightbox-close:focus{outline:2px solid #fff}
+
 </style>
 </head>
 <body>
@@ -713,77 +714,67 @@
 
 
 <script>
-// AI Inject: Misure + Lightbox (non-invasivo)
+// === AI Inject: Lightbox con delega + badge Misure da `products[].measures` o `data-measures` ===
 (function(){
-  try{
+  try {
     document.documentElement.classList.add('ai-lightbox-enabled');
 
-    // 1) MISURE: se l'oggetto prodotto ha la proprietà "measures", mostra un badge vicino alla descrizione.
-    // Esempio: aggiungi "measures: '20×10×5 cm'" dentro ciascun oggetto nel vettore "products".
+    const backdrop = document.getElementById('ai-lightbox-backdrop');
+    const imgEl = document.getElementById('ai-lightbox-img');
+    const closeBtn = document.getElementById('ai-lightbox-close');
+    function openLb(src, alt){
+      if(!src) return;
+      imgEl.src = src; imgEl.alt = alt || '';
+      backdrop.setAttribute('open','');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLb(){
+      backdrop.removeAttribute('open');
+      imgEl.removeAttribute('src');
+      document.body.style.overflow = '';
+    }
+    if (closeBtn) closeBtn.addEventListener('click', closeLb);
+    if (backdrop) backdrop.addEventListener('click', (e)=>{ if(e.target===backdrop) closeLb(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLb(); });
+
+    // Delega click su immagini galleria e su qualsiasi img[data-lightbox]
+    document.addEventListener('click', function(e){
+      const main = e.target.closest('.gallery .gallery-main');
+      if (main) { e.preventDefault(); openLb(main.currentSrc || main.src, main.alt || ''); return; }
+      const dlb = e.target.closest('img[data-lightbox]');
+      if (dlb) { e.preventDefault(); openLb(dlb.currentSrc || dlb.src, dlb.alt || ''); return; }
+    }, true);
+
+    // Badge Misure: da data-measures o da products[idx].measures
     function applyMeasures(){
       try{
-        if(!Array.isArray(products)) return;
-        const cards = document.querySelectorAll('#product-grid > article.card');
+        const grid = document.getElementById('product-grid');
+        if(!grid) return;
+        const cards = grid.querySelectorAll('article.card');
         cards.forEach((card, idx)=>{
-          const p = products[idx];
-          if(!p || !p.measures) return;
-          if(card.querySelector('.product-measures')) return;
+          if (card.querySelector('.product-measures')) return;
+          let measures = card.getAttribute('data-measures') || card.closest('[data-measures]')?.getAttribute('data-measures') || '';
+          try { if(!measures && Array.isArray(window.products)) { measures = window.products[idx]?.measures || ''; } } catch(_) {}
+          if(!measures) return;
           const badge = document.createElement('p');
           badge.className = 'product-measures';
-          badge.textContent = p.measures;
-          const body = card.querySelector('.body');
-          const desc = body ? body.querySelector('.muted') : null;
+          badge.textContent = measures;
+          const desc = card.querySelector('.body .muted');
           if(desc){ desc.insertAdjacentElement('afterend', badge); }
-          else if(body){ body.appendChild(badge); }
+          else { (card.querySelector('.body') || card).appendChild(badge); }
         });
       }catch(_){}
     }
 
-    // 2) LIGHTBOX: click su immagine principale della galleria per ingrandire
-    function enableLightbox(){
-      const backdrop = document.getElementById('ai-lightbox-backdrop');
-      const imgEl = document.getElementById('ai-lightbox-img');
-      const btn = document.getElementById('ai-lightbox-close');
-      if(!backdrop || !imgEl || !btn) return;
-
-      function openLb(src, alt){
-        imgEl.src = src; imgEl.alt = alt||'';
-        backdrop.setAttribute('open','');
-        document.body.style.overflow='hidden';
-      }
-      function closeLb(){
-        backdrop.removeAttribute('open');
-        imgEl.removeAttribute('src');
-        document.body.style.overflow='';
-      }
-      btn.addEventListener('click', closeLb);
-      backdrop.addEventListener('click', (e)=>{ if(e.target===backdrop) closeLb(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLb(); });
-
-      // delega: gallerie già renderizzate
-      document.querySelectorAll('.gallery .gallery-main').forEach(img=>{
-        img.addEventListener('click', ()=> openLb(img.currentSrc || img.src, img.alt || ''));
-      });
-      // thumbs anche cliccabili per aprire lightbox con l'immagine grande corrente dopo il cambio
-      document.querySelectorAll('.gallery .thumbs img').forEach(thumb=>{
-        thumb.addEventListener('dblclick', ()=> {
-          const main = thumb.closest('.gallery')?.querySelector('.gallery-main');
-          const src = main?.currentSrc || main?.src || thumb.src;
-          openLb(src, main?.alt || thumb.alt || '');
-        });
-      });
-    }
-
-    // Applica dopo che la pagina ha creato i prodotti
-    // Il sito chiama renderProducts() in fondo: lanciamo un microtask per dare il tempo al DOM.
-    queueMicrotask(()=>{ applyMeasures(); enableLightbox(); });
-
-    // Re-applica in caso di ri-render futuri (es. se si aggiorna la griglia)
     const grid = document.getElementById('product-grid');
-    if(grid){
-      new MutationObserver(()=>{ applyMeasures(); enableLightbox(); }).observe(grid,{childList:true, subtree:false});
+    if (grid) {
+      const mo = new MutationObserver(()=> applyMeasures());
+      mo.observe(grid, { childList: true });
+      applyMeasures();
+    } else {
+      setTimeout(applyMeasures, 0);
     }
-  }catch(_){}
+  } catch(_) {}
 })();
 </script>
 
