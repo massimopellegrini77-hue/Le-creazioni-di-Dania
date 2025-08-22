@@ -411,7 +411,92 @@
         desc: 'Pochette in cotone a righe grigio/panna con ricamo “TONICA (COME IL GIN)”. Zip rossa e pratico laccetto. Lavabile.',
         tag: 'Fatto a mano'
       }
-    ];
+    
+  ,
+  {
+    id: 'astuccio-cercasi-leggerezza',
+    name: 'Astuccio “Cercasi Leggerezza”',
+    price: 15.0,
+    images: ['CERCASI leggerezza L 20cm x H 14cm.jpg','logo.jpg'],
+    desc: 'Bustina piatta in cotone a righe con ricamo rosso “Cercasi Leggerezza”. Chiusura a zip; ideale come astuccio, trousse o porta-oggetti.',
+    tag: 'Ricamo',
+    measures: '20 × 14 cm'
+  },
+  {
+    id: 'astuccio-houston-ripassami-lourdes',
+    name: 'Astuccio “HOUSTON ripassami LOURDES”',
+    price: 15.0,
+    images: ['HOUSTON ripassami LOURDES L 20cm x H 14cm.jpg','logo.jpg'],
+    desc: 'Bustina piatta in cotone a righe con ricamo rosso “HOUSTON ripassami LOURDES”. Zip robusta; perfetta come porta-trucco o porta-penne.',
+    tag: 'Ricamo',
+    measures: '20 × 14 cm'
+  },
+  {
+    id: 'astuccio-ragazza-ansia-e-sapone',
+    name: 'Astuccio “RAGAZZA ansia e sapone”',
+    price: 15.0,
+    images: ['RAGAZZA Ansia e Sapone L 20cm x H 14cm.jpg','logo.jpg'],
+    desc: 'Bustina piatta in cotone a righe con ricamo rosso “RAGAZZA ansia e sapone”. Zip superiore; adatta per accessori e piccoli oggetti.',
+    tag: 'Ricamo',
+    measures: '20 × 14 cm'
+  },
+  {
+    id: 'astuccio-sprizzo-di-gioia',
+    name: 'Astuccio “SPRITZO di gioia”',
+    price: 15.0,
+    images: ['SPRITZO di gioia L 20cm x H 14cm.jpg','logo.jpg'],
+    desc: 'Bustina piatta in cotone a righe con ricamo rosso “SPRITZO di gioia”. Chiusura a cerniera; comoda come pochette o astuccio.',
+    tag: 'Ricamo',
+    measures: '20 × 14 cm'
+  },
+  {
+    id: 'astuccio-this-agio',
+    name: 'Astuccio “THIS AGIO”',
+    price: 15.0,
+    images: ['THIS AGIO L 20cm x H 14cm.jpg','logo.jpg'],
+    desc: 'Bustina piatta in cotone a righe con ricamo rosso “THIS AGIO”. Zip superiore; ideale per piccoli oggetti e make-up.',
+    tag: 'Ricamo',
+    measures: '20 × 14 cm'
+  }
+
+  ,
+  {
+    id: 'astuccio-quadrato-pirati',
+    name: 'Astuccio quadrato pirati',
+    price: 15.0,
+    images: ['Astuccio quadrato pirati L 17cm x H 17cm (a).jpg','Astuccio quadrato pirati L 17cm x H 17cm (b).jpg'],
+    desc: 'Astuccio quadrato in cotone fantasia pirati, chiusura a zip e interno foderato. Perfetto per colori, piccoli giochi o accessori.',
+    tag: 'Bambini',
+    measures: '17 × 17 cm'
+  },
+  {
+    id: 'astuccio-ho-tutto-fuori-controllo',
+    name: 'Astuccio “HO TUTTO fuori CONTROLLO”',
+    price: 15.0,
+    images: ['HO TUTTO fuori CONTROLLO L 22cm x H 15cm (a).jpg','HO TUTTO fuori CONTROLLO L 22cm x H 15cm (b).jpg'],
+    desc: 'Bustina in cotone a righe con ricamo rosso “HO TUTTO fuori CONTROLLO”. Zip colorata, capiente e resistente.',
+    tag: 'Ricamo',
+    measures: '22 × 15 cm'
+  },
+  {
+    id: 'astuccio-nata-per-sbuffare',
+    name: 'Astuccio “nata per SBUFFARE”',
+    price: 15.0,
+    images: ['nata per SBUFFARE 22cm x H 15cm .jpg','nata per SBUFFARE 22cm x H 15cm (b).jpg'],
+    desc: 'Bustina in cotone a righe con ricamo rosso “nata per SBUFFARE”. Pratica pochette multiuso con cerniera.',
+    tag: 'Ricamo',
+    measures: '22 × 15 cm'
+  },
+  {
+    id: 'porta-spazzolino-pirati',
+    name: 'Porta spazzolino/dentifricio pirati',
+    price: 15.0,
+    images: ['Porta spazzolino dentifricio pirati (a) L 16cm x H 20 cm (aperto).jpg','Porta spazzolino dentifricio pirati (b) L 16cm x H 20 cm (aperto).jpg'],
+    desc: 'Custodia portaspazzolino e dentifricio in cotone fantasia pirati, con taschine interne e bottoni a pressione. Ideale per viaggio o scuola.',
+    tag: 'Bambini',
+    measures: '16 × 20 cm (aperto)'
+  }
+];
 
     // === RENDER PRODOTTI (con galleria immagini) ===
     const grid = document.getElementById('product-grid');
@@ -737,7 +822,7 @@
     if (backdrop) backdrop.addEventListener('click', (e)=>{ if(e.target===backdrop) closeLb(); });
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLb(); });
 
-    // Delega click su immagini galleria e su qualsiasi img[data-lightbox]
+    // Delegation on gallery main images and any img[data-lightbox]
     document.addEventListener('click', function(e){
       const main = e.target.closest('.gallery .gallery-main');
       if (main) { e.preventDefault(); openLb(main.currentSrc || main.src, main.alt || ''); return; }
@@ -745,7 +830,7 @@
       if (dlb) { e.preventDefault(); openLb(dlb.currentSrc || dlb.src, dlb.alt || ''); return; }
     }, true);
 
-    // Badge Misure: da data-measures o da products[idx].measures
+    // Badge Misure: prefer data-measures on card/parent, fallback to products[idx].measures
     function applyMeasures(){
       try{
         const grid = document.getElementById('product-grid');
