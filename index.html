@@ -388,22 +388,6 @@
         tag: 'Novità'
       },
       {
-        id: 'spazzolino-pirati',
-        name: 'Porta spazzolino da viaggio – Pirati',
-        price: 15.0,
-        images: ['spazzolino.jpg'],
-        desc: 'Astuccio portaspazzolino bimbi in cotone fantasia pirati: tre scomparti interni e chiusura con bottoni a pressione. Lavabile.',
-        tag: 'Bimbi'
-      },
-      {
-        id: 'spazzolino-compatto',
-        name: 'Porta spazzolino – Variante compatta',
-        price: 15.0,
-        images: ['spazzolino1.jpg'],
-        desc: 'Porta spazzolino compatto in tessuto fantasia con alloggi interni e chiusura a pressione. Perfetto da zaino. Lavabile.',
-        tag: 'Bimbi'
-      },
-      {
         id: 'tonica-gin',
         name: 'Pochette “Tonica come il gin”',
         price: 20.0,
@@ -860,6 +844,50 @@
       setTimeout(applyMeasures, 0);
     }
   } catch(_) {}
+})();
+</script>
+
+
+<script>
+// === AI Inject: Measures-in-description ===
+(function(){
+  function parseMeasuresFromFilename(name) {
+    if (!name) return null;
+    var m = name.match(/L\s*(\d+)\s*cm\s*x\s*H\s*(\d+)\s*cm/i);
+    if (!m) return null;
+    return { L: m[1], H: m[2] };
+  }
+  function appendMeasuresToDescriptions(){
+    var grid = document.getElementById('product-grid');
+    if(!grid) return;
+    var cards = grid.querySelectorAll('article.card');
+    cards.forEach(function(card, idx){
+      var desc = card.querySelector('.body .muted');
+      if(!desc) return;
+      if(/Misure:/i.test(desc.textContent)) return;
+      var src = null;
+      try {
+        if (Array.isArray(window.products) && window.products[idx] && Array.isArray(window.products[idx].images)) {
+          src = window.products[idx].images[0] || null;
+        }
+      } catch(_){}
+      if(!src) {
+        var firstImg = card.querySelector('.gallery img, img');
+        if(firstImg) src = firstImg.getAttribute('src') || firstImg.getAttribute('data-src');
+      }
+      var meas = parseMeasuresFromFilename(src || '');
+      if(!meas) return;
+      desc.textContent = desc.textContent.trim().replace(/\s+$/,'') + ' — Misure: L ' + meas.L + ' cm × H ' + meas.H + ' cm';
+    });
+  }
+  var grid = document.getElementById('product-grid');
+  if (grid) {
+    var mo = new MutationObserver(appendMeasuresToDescriptions);
+    mo.observe(grid, { childList: true });
+    appendMeasuresToDescriptions();
+  } else {
+    setTimeout(appendMeasuresToDescriptions, 0);
+  }
 })();
 </script>
 
