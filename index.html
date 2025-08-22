@@ -242,23 +242,70 @@
 
   <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials">
 
-  <style>
-/* === Simple Lightbox & Measures Injection === */
-.lb-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.8);z-index:9999}
-.lb-overlay.open{display:flex}
-.lb-content{max-width:90vw;max-height:90vh}
-.lb-content img{max-width:100%;max-height:90vh;display:block;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.lb-close{position:fixed;top:18px;right:18px;font-size:28px;color:#fff;background:rgba(0,0,0,.45);border:none;border-radius:10px;padding:6px 10px;cursor:pointer}
-.lb-caption{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;color:#fff;font:500 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial;opacity:.95;background:rgba(0,0,0,.45);padding:6px 10px;border-radius:8px;max-width:90vw;text-align:center}
-.measures-line{margin-top:.35rem;font:500 14px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial}
-.measures-line .chip{display:inline-block;background:#f0f0f0;border:1px solid #e0e0e0;border-radius:999px;padding:.25rem .6rem;margin-left:.35rem;font-weight:600}
-@media (prefers-color-scheme:dark){
-  .measures-line .chip{background:#222;border-color:#333;color:#ddd}
+  
+<style id="ai-injected-measures-lightbox">
+/* --- Misure (Measurements) badge --- */
+.product-measures {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px dashed currentColor;
+  border-radius: 8px;
+  font-size: 0.95em;
+  display: inline-block;
+  opacity: 0.9;
 }
-a.lb-wrap{display:block}
-a.lb-wrap img{transition:transform .2s ease}
-a.lb-wrap:hover img{transform:scale(1.01)}
+.product-measures::before {
+  content: "Misure: ";
+  font-weight: 600;
+}
+
+/* --- Lightbox --- */
+.ai-lightbox-enabled img:not(.ai-no-zoom) {
+  cursor: zoom-in;
+}
+
+#ai-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#ai-lightbox-backdrop[open] { display: flex; }
+
+#ai-lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+#ai-lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 10px 30px rgba(0,0,0,.5);
+  border-radius: 12px;
+}
+
+#ai-lightbox-close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  color: black;
+  font-size: 20px;
+  line-height: 36px;
+  cursor: pointer;
+}
+#ai-lightbox-close:focus { outline: 2px solid white; }
 </style>
+
 </head>
 
   <body class="logged-in env-production page-responsive" style="word-wrap: break-word;">
@@ -2896,95 +2943,83 @@ data-styled.g4[id="Tooltip__TooltipBase-sc-17tf59c-0"]{content:"fiSvBN,"}/*!sc*/
     <div id="js-global-screen-reader-notice" class="sr-only mt-n1" aria-live="polite" aria-atomic="true" ></div>
     <div id="js-global-screen-reader-notice-assertive" class="sr-only mt-n1" aria-live="assertive" aria-atomic="true"></div>
   
-<script>
-(function(){
-  // Inject overlay markup once
-  const overlay = document.createElement('div');
-  overlay.className = 'lb-overlay';
-  overlay.innerHTML = `
-    <button class="lb-close" aria-label="Chiudi">✕</button>
-    <div class="lb-content" role="dialog" aria-modal="true" aria-label="Immagine ingrandita">
-      <img src="" alt="">
-    </div>
-    <div class="lb-caption" style="display:none;"></div>
-  `;
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Escape'){ overlay.classList.remove('open'); }
-  });
-  overlay.querySelector('.lb-close').addEventListener('click', ()=> overlay.classList.remove('open'));
-  overlay.addEventListener('click', (e)=>{
-    // close if background clicked (not image)
-    if(e.target === overlay) overlay.classList.remove('open');
-  });
-  document.body.appendChild(overlay);
+<!-- AI-injected lightbox and measures logic -->
+<div id="ai-lightbox-backdrop" role="dialog" aria-modal="true" aria-label="Anteprima immagine">
+  <div id="ai-lightbox-content">
+    <img id="ai-lightbox-img" alt="">
+    <button id="ai-lightbox-close" aria-label="Chiudi">×</button>
+  </div>
+</div>
+<script id="ai-injected-measures-lightbox-js">
+(function () {
+  // Add a class to body to enable zoom cursor
+  document.documentElement.classList.add('ai-lightbox-enabled');
 
-  function openLightbox(src, alt, caption){
-    const img = overlay.querySelector('img');
-    img.src = src;
-    img.alt = alt || '';
-    const cap = overlay.querySelector('.lb-caption');
-    if (caption){
-      cap.textContent = caption;
-      cap.style.display = 'block';
+  // --- MISURE: look for any element with data-measures and append a visible badge.
+  // Example usage to opt-in on any product card: <div class="product-card" data-measures="20×10×5 cm"></div>
+  var holders = document.querySelectorAll('[data-measures]');
+  holders.forEach(function (el) {
+    if (el.querySelector('.product-measures')) return; // already added
+    var value = el.getAttribute('data-measures');
+    if (!value) return;
+    var badge = document.createElement('p');
+    badge.className = 'product-measures';
+    badge.textContent = value;
+    // Try to place near a description if present, else append at end
+    var desc = el.querySelector('.product-description, .description, .card-text, p');
+    if (desc && desc.parentElement === el) {
+      desc.insertAdjacentElement('afterend', badge);
     } else {
-      cap.style.display = 'none';
+      el.appendChild(badge);
     }
-    overlay.classList.add('open');
+  });
+
+  // --- LIGHTBOX: click any eligible image to open in an overlay for better viewing.
+  var backdrop = document.getElementById('ai-lightbox-backdrop');
+  var imgEl = document.getElementById('ai-lightbox-img');
+  var closeBtn = document.getElementById('ai-lightbox-close');
+
+  function openLightbox(src, alt) {
+    imgEl.src = src;
+    imgEl.alt = alt || '';
+    backdrop.setAttribute('open', '');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    backdrop.removeAttribute('open');
+    imgEl.removeAttribute('src');
+    document.body.style.overflow = '';
   }
 
-  // Wrap suitable images with anchors for lightbox
-  const candidates = Array.from(document.querySelectorAll('img'))
-    .filter(img => {
-      const w = img.getAttribute('width');
-      const h = img.getAttribute('height');
-      const isPixel = (s)=> s && /px$/.test(s);
-      // Exclude tiny UI icons / logos
-      const area = (img.naturalWidth||parseInt(w)||300) * (img.naturalHeight||parseInt(h)||300);
-      const src = (img.currentSrc || img.src || '').toLowerCase();
-      const isDecorative = /logo|icon|sprite|avatar|thumbnail|thumb/.test(src) || area < 40000;
-      return !isDecorative;
-    });
-  candidates.forEach(img => {
-    if (img.closest('a.lb-wrap')) return; // already wrapped
-    const a = document.createElement('a');
-    a.href = img.currentSrc || img.src;
-    a.className = 'lb-wrap';
-    a.addEventListener('click', (e)=>{
-      e.preventDefault();
-      const parent = img.closest('[data-measures], .product, .product-card, .card, .item, .prodotto');
-      const measures = parent ? parent.getAttribute('data-measures') : null;
-      const caption = measures ? ('Misure: ' + measures) : (img.alt || '');
-      openLightbox(a.href, img.alt, caption);
-    });
-    img.parentNode.insertBefore(a, img);
-    a.appendChild(img);
+  closeBtn.addEventListener('click', closeLightbox);
+  backdrop.addEventListener('click', function(e){
+    if (e.target === backdrop) closeLightbox();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeLightbox();
   });
 
-  // Inject "Misure:" line inside product descriptions
-  const productSelectors = ['.product-card', '.product', '.item', '.card', '.prodotto'];
-  const products = document.querySelectorAll(productSelectors.join(','));
-  products.forEach(p => {
-    // Try to find a description element
-    const desc = p.querySelector('.description, .product-description, .card-text, .item-description, .descrizione') || p;
-    // Avoid duplicating
-    if (desc.querySelector('.measures-line')) return;
-    let measures = p.getAttribute('data-measures');
-    // If not on parent, try image attribute
-    if (!measures){
-      const ii = p.querySelector('img[data-measures]');
-      if (ii) measures = ii.getAttribute('data-measures');
-    }
-    // If still missing, create a placeholder to fill later
-    if (!measures) measures = '— (aggiungi es. 30×20×15 cm)';
-    const line = document.createElement('p');
-    line.className = 'measures-line';
-    line.innerHTML = 'Misure:<span class="chip">' + measures + '</span>';
-    desc.appendChild(line);
-  });
+  // Eligible images: any <img> inside main content (avoid icons/logos), or with [data-lightbox] attribute
+  var candidates = Array.from(document.querySelectorAll('main img, .content img, .products img, [data-lightbox]'))
+    .filter(function(img){
+      var cls = (img.className || '').toLowerCase();
+      var w = img.getAttribute('width');
+      var h = img.getAttribute('height');
+      // Heuristics to skip tiny icons and logos
+      var tiny = (w && parseInt(w,10) < 64) || (h && parseInt(h,10) < 64);
+      return !cls.includes('logo') && !cls.includes('icon') && !tiny;
+    });
 
-  // Helper: Make it easy to set measures inline via data-measures on any product container:
-  // <div class="product-card" data-measures="30×20×15 cm"> ... </div>
-  // or on an <img data-measures="30×20×15 cm">
+  candidates.forEach(function(img){
+    img.addEventListener('click', function(ev){
+      // If the image is already inside a link, prefer that unless it has data-lightbox
+      if (!img.hasAttribute('data-lightbox') && img.closest('a')) return;
+      ev.preventDefault();
+      var src = img.currentSrc || img.src;
+      if (!src) return;
+      openLightbox(src, img.alt || '');
+    });
+  });
 })();
 </script>
 
