@@ -235,6 +235,8 @@
             
             <!-- DATI SPEDIZIONE + RIEPILOGO (mostrato solo se carrello non è vuoto) -->
             <form id="shipping-form" action="https://formspree.io/f/movlbejp" method="POST" class="card" style="padding:16px;margin-top:14px" novalidate>
+
+              <input type="hidden" name="_replyto" id="order-replyto" value="">
               <input type="hidden" name="_subject"  value="Nuovo ordine — Le creazioni di Dania">
               <input type="hidden" name="_language" value="it">
               <input type="hidden" name="_gotcha"  style="display:none">
@@ -284,10 +286,9 @@
               </div>
 
               <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px">
-                <button id="pay-paypal" class="btn" type="button" disabled>Paga con PayPal</button>
-                <button id="pay-satispay" class="btn satispay" type="button" disabled>Paga con Satispay</button>
-                <span id="ship-status" class="muted" style="font-size:12px"></span>
-              </div>
+              <button id="confirm-order" class="btn" type="button" disabled>Conferma ordine</button>
+              <span id="order-confirm-msg" class="muted"></span>
+            </div>
             </form>
 
           </div>
@@ -980,10 +981,8 @@
     }
 
     function setPayEnabled(enabled){
-      const pp = document.getElementById('pay-paypal');
-      const sp = document.getElementById('pay-satispay');
-      if(pp) pp.disabled = !enabled;
-      if(sp) sp.disabled = !enabled;
+      const btn = document.getElementById('confirm-order');
+      if(btn) btn.disabled = !enabled;
     }
 
     function renderOrderSummary(){
@@ -1073,6 +1072,34 @@
         return false;
       }
 
+    // Conferma ordine: invia email (tramite Formspree) con riepilogo + dati spedizione
+    const confirmBtn = document.getElementById('confirm-order');
+    if(confirmBtn){
+      confirmBtn.addEventListener('click', async ()=>{
+        const msg = document.getElementById('order-confirm-msg');
+        const formOk = shipIsValid(true);
+        if(!formOk){
+          if(msg) msg.textContent = 'Completa i dati richiesti per procedere.';
+          // Scroll al form per aiutare l’utente
+          const f = document.getElementById('shipping-form');
+          if(f) f.scrollIntoView({behavior:'smooth', block:'start'});
+          return;
+        }
+        if(msg) msg.textContent = 'Invio richiesta in corso…';
+        confirmBtn.disabled = true;
+
+        const ok = await sendOrderEmailIfPossible();
+        if(ok){
+          if(msg) msg.textContent = 'Richiesta inviata! Riceverai una email di riepilogo. L’ordine verrà confermato dopo il pagamento.';
+          // opzionale: scroll al messaggio
+          if(msg) msg.scrollIntoView({behavior:'smooth', block:'center'});
+        } else {
+          if(msg) msg.textContent = 'Invio non riuscito. Riprova oppure contattaci via email/WhatsApp.';
+          confirmBtn.disabled = false;
+        }
+      });
+    }
+
       // aggiorna hidden fields prima dell'invio
       renderOrderSummary();
 
@@ -1096,33 +1123,6 @@
       }
     }
 // PayPal checkout (carrello multi-riga)
-    
-    document.getElementById('pay-paypal').addEventListener('click', async ()=>{
-      const ok = await sendOrderEmailIfPossible();
-      if(!ok) return;
-
-      const {lines, discount, shipping, coupon} = computeTotals();
-      if(!lines.length) return;
-      const f = document.createElement('form');
-      f.action = 'https://www.paypal.com/cgi-bin/webscr';
-      f.method = 'post';
-      f.style.display = 'none';
-      f.innerHTML = '';
-      const fields = {
-        cmd: '_cart', upload: '1', business: paypalBusiness, currency_code: 'EUR', charset: 'utf-8',
-        custom: 'cart-' + Date.now()
-      };
-      Object.entries(fields).forEach(([k,v])=>{ const i=document.createElement('input'); i.type='hidden'; i.name=k; i.value=v; f.appendChild(i); });
-      // linee
-      lines.forEach((l,idx)=>{
-        const n = idx+1;
-        const map = {
-          ['item_name_'+n]: PAYPAL_PREFIX + l.name,
-          ['amount_'+n]: l.price.toFixed(2),
-          ['quantity_'+n]: String(l.qty)
-        };
-        Object.entries(map).forEach(([k,v])=>{ const i=document.createElement('input'); i.type='hidden'; i.name=k; i.value=v; f.appendChild(i); });
-      });
       // sconto su carrello
       if(coupon){
         if(coupon.type==='percent'){
@@ -1139,22 +1139,6 @@
     });
 
     // Satispay checkout (mostra QR + totale)
-    
-    document.getElementById('pay-satispay').addEventListener('click', async ()=>{
-      const ok = await sendOrderEmailIfPossible();
-      if(!ok) return;
-
-      const {lines, total} = computeTotals();
-      if(!lines.length) return;
-      const descr = lines.map(l=>`${l.name} x${l.qty}`).join(' • ');
-      const qr = 'https://quickchart.io/qr?margin=2&size=220&text=' + encodeURIComponent(satispayLink);
-      document.getElementById('satispay-qr').src = qr;
-      document.getElementById('satispay-open').href = satispayLink;
-      document.getElementById('satispay-descr').textContent = descr;
-      document.getElementById('satispay-total').textContent = fmtEuro(total);
-      openModal('satispay-modal');
-    });
-
     // Navigazione
     document.getElementById('go-cart').addEventListener('click',()=> setTimeout(renderCart,0));
 
