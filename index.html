@@ -232,10 +232,64 @@
               </div>
             </div>
 
-            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px">
-              <button id="pay-paypal" class="btn" type="button">Paga con PayPal</button>
-              <button id="pay-satispay" class="btn satispay" type="button">Paga con Satispay</button>
-            </div>
+            
+            <!-- DATI SPEDIZIONE + RIEPILOGO (mostrato solo se carrello non è vuoto) -->
+            <form id="shipping-form" action="https://formspree.io/f/movlbejp" method="POST" class="card" style="padding:16px;margin-top:14px" novalidate>
+              <input type="hidden" name="_subject"  value="Nuovo ordine — Le creazioni di Dania">
+              <input type="hidden" name="_language" value="it">
+              <input type="hidden" name="_gotcha"  style="display:none">
+              <input type="hidden" name="order_summary_json" id="order-summary-json" value="">
+              <input type="hidden" name="order_summary_text" id="order-summary-text" value="">
+
+              <h3 style="margin:0 0 6px;color:var(--brand)">Dati per la spedizione</h3>
+              <p class="muted" style="margin:0 0 12px">Compila i dati: serviranno per preparare e spedire l’ordine. I pagamenti si attivano solo quando i dati sono completi.</p>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <label>Nome<br/>
+                  <input name="nome" required autocomplete="given-name" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/>
+                </label>
+                <label>Cognome<br/>
+                  <input name="cognome" required autocomplete="family-name" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/>
+                </label>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+                <label>Email<br/>
+                  <input type="email" name="email" required autocomplete="email" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/>
+                </label>
+                <label>Cellulare<br/>
+                  <input type="tel" name="telefono" required placeholder="+39 3XX XXX XXXX"
+                         inputmode="tel" pattern="[0-9+().\s-]{8,20}" autocomplete="tel"
+                         style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"/>
+                  <small id="ship-phone-error" style="display:none;color:#c24d3c">Inserisci un numero valido (es. +39 3XX XXX XXXX).</small>
+                </label>
+              </div>
+
+              <label style="display:block;margin-top:12px">Indirizzo di spedizione completo<br/>
+                <textarea name="indirizzo" required rows="3" placeholder="Via, numero civico, CAP, città, provincia (e citofono / note)"
+                          autocomplete="shipping street-address"
+                          style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px"></textarea>
+              </label>
+
+              <div class="banner" style="margin-top:12px">
+                <strong>Riepilogo prodotti</strong>
+                <ul id="order-items-list" class="muted" style="margin:10px 0 0 18px;display:grid;gap:6px"></ul>
+                <div class="muted" style="margin-top:10px;display:grid;grid-template-columns:1fr auto;gap:6px;max-width:420px">
+                  <div>Subtotale</div><div class="right" id="ship-subtot">€ 0,00</div>
+                  <div>Sconto</div><div class="right" id="ship-sconto">€ 0,00</div>
+                  <div>Spedizione</div><div class="right" id="ship-sped">€ 0,00</div>
+                  <div style="border-top:1px dashed #e5e5e5;margin-top:6px"></div><div style="border-top:1px dashed #e5e5e5;margin-top:6px"></div>
+                  <div><strong>Totale</strong></div><div class="right"><strong id="ship-totale">€ 0,00</strong></div>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px">
+                <button id="pay-paypal" class="btn" type="button" disabled>Paga con PayPal</button>
+                <button id="pay-satispay" class="btn satispay" type="button" disabled>Paga con Satispay</button>
+                <span id="ship-status" class="muted" style="font-size:12px"></span>
+              </div>
+            </form>
+
           </div>
         </div>
       </div>
@@ -324,13 +378,8 @@
 
     // --- Cookie notice
     const cn = document.getElementById('cookie-notice');
-    let cookieOk=false;
-    try{ cookieOk = !!localStorage.getItem('cookie_ok'); }catch(e){ cookieOk=false; }
-    if(!cookieOk){cn.style.display='flex'}
-    function acceptCookies(){
-      try{ localStorage.setItem('cookie_ok','1'); }catch(e){}
-      cn.style.display='none';
-    }
+    if(!localStorage.getItem('cookie_ok')){cn.style.display='flex'}
+    function acceptCookies(){localStorage.setItem('cookie_ok','1');cn.style.display='none'}
 
     // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -733,77 +782,43 @@
           const q = Math.max(1, parseInt(qty.value||'1',10));
           addToCart(p.id, q);
         }
-        // Mobile: usa pointerup e click con guardia anti-doppio
-        let _lastAddTs = 0;
-        function handleAddGuarded(e){
-          const now = Date.now();
-          if(now - _lastAddTs < 300) return;
-          _lastAddTs = now;
-          handleAdd(e);
-        }
-        btn.addEventListener('pointerup', handleAddGuarded);
-        btn.addEventListener('click', handleAddGuarded);
+        btn.addEventListener('pointerup', handleAdd);
 
         grid.appendChild(card);
       });
     }
 
     // === CARRELLO (localStorage) ===
-    let STORAGE_AVAILABLE = true;
-const CART_KEY = 'cart-dania-v1';
+    const CART_KEY = 'cart-dania-v1';
+    let cart = loadCart();
 
-function loadCart(){
-  try{
-    const raw = localStorage.getItem(CART_KEY);
-    if(raw) return JSON.parse(raw);
-  }catch(e){
-    console.warn('localStorage non leggibile, carrello solo in RAM:', e);
-    STORAGE_AVAILABLE = false;
-  }
-  return { items: [], coupon: null };
-}
+    function loadCart(){
+      try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {items:[], coupon:null}; }catch(e){ return {items:[], coupon:null}; }
+    }
+    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
 
-function saveCart(){
-  if(!STORAGE_AVAILABLE) return;
-  try{
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  }catch(e){
-    console.warn('localStorage KO, disabilito persistenza:', e);
-    STORAGE_AVAILABLE = false;
-  }
-}
-
-let cart = loadCart();
     function findProduct(id){ return products.find(p=>p.id===id); }
+
     function addToCart(id, qty){
       const item = cart.items.find(i=>i.id===id);
       if(item){ item.qty += qty; } else { cart.items.push({id, qty}); }
-      // Non far fallire tutto se lo storage dà problemi (tipico su mobile)
-      try{ saveCart(); }catch(e){ console.warn('saveCart fallita', e); }
+      saveCart();
       renderCart();
       flashCart();
     }
 
     function removeFromCart(id){
       cart.items = cart.items.filter(i=>i.id!==id);
-      try{ saveCart(); }catch(e){}
+      saveCart();
       renderCart();
     }
 
     function updateQty(id, qty){
       const it = cart.items.find(i=>i.id===id);
-      if(it){
-        it.qty = Math.max(1, qty|0);
-        try{ saveCart(); }catch(e){}
-        renderCart();
-      }
+      if(it){ it.qty = Math.max(1, qty|0); saveCart(); renderCart(); }
     }
 
-    function clearCart(){
-      cart = {items:[], coupon:null};
-      try{ saveCart(); }catch(e){}
-      renderCart();
-    }
+    function clearCart(){ cart = {items:[], coupon:null}; saveCart(); renderCart(); }
 
     function fmtEuro(n){ return '€ ' + n.toFixed(2).replace('.',','); }
 
@@ -872,6 +887,10 @@ let cart = loadCart();
       document.getElementById('sconto').textContent = '− ' + fmtEuro(discount);
       document.getElementById('sped').textContent = shipping? fmtEuro(shipping): 'Gratis';
       document.getElementById('totale').textContent = fmtEuro(total);
+
+      // aggiorna riepilogo nel form spedizione
+      try{ renderOrderSummary(); }catch(e){}
+      try{ setPayEnabled(shipIsValid(false)); }catch(e){}
     }
 
     function flashCart(){
@@ -885,16 +904,203 @@ let cart = loadCart();
         const code = (document.getElementById('coupon-input').value||'').trim();
         const msg = document.getElementById('coupon-msg');
         const found = COUPONS.find(c=>c.code.toUpperCase()===code.toUpperCase());
-        if(found){ cart.coupon = code; try{ saveCart(); }catch(e){} msg.textContent = `Coupon applicato: ${found.type==='percent'? ('−'+found.value+'%'): ('−€ '+found.value)}`; renderCart(); }
-        else { msg.textContent = 'Codice non valido.'; cart.coupon=null; try{ saveCart(); }catch(e){} renderCart(); }
+        if(found){ cart.coupon = code; saveCart(); msg.textContent = `Coupon applicato: ${found.type==='percent'? ('−'+found.value+'%'): ('−€ '+found.value)}`; renderCart(); }
+        else { msg.textContent = 'Codice non valido.'; cart.coupon=null; saveCart(); renderCart(); }
       }
     });
 
     // Pulsanti carrello
     document.getElementById('clear-cart').addEventListener('click', clearCart);
 
-    // PayPal checkout (carrello multi-riga)
-    document.getElementById('pay-paypal').addEventListener('click', ()=>{
+    
+    // === DATI SPEDIZIONE (persistenza + validazione + riepilogo) ===
+    const SHIP_KEY = 'ship-dania-v1';
+
+    function loadShip(){
+      try{
+        const raw = localStorage.getItem(SHIP_KEY);
+        if(raw) return JSON.parse(raw);
+      }catch(e){}
+      return { nome:'', cognome:'', email:'', telefono:'', indirizzo:'' };
+    }
+    function saveShip(data){
+      try{ localStorage.setItem(SHIP_KEY, JSON.stringify(data)); }catch(e){}
+    }
+
+    function getShipForm(){
+      return document.getElementById('shipping-form');
+    }
+
+    function shipFormData(){
+      const f = getShipForm();
+      if(!f) return loadShip();
+      return {
+        nome: (f.querySelector('[name="nome"]')?.value || '').trim(),
+        cognome: (f.querySelector('[name="cognome"]')?.value || '').trim(),
+        email: (f.querySelector('[name="email"]')?.value || '').trim(),
+        telefono: (f.querySelector('[name="telefono"]')?.value || '').trim(),
+        indirizzo: (f.querySelector('[name="indirizzo"]')?.value || '').trim(),
+      };
+    }
+
+    function restoreShipForm(){
+      const f = getShipForm();
+      if(!f) return;
+      const d = loadShip();
+      ['nome','cognome','email','telefono','indirizzo'].forEach(k=>{
+        const el = f.querySelector(`[name="${k}"]`);
+        if(el && typeof d[k] === 'string') el.value = d[k];
+      });
+    }
+
+    function validatePhone(raw){
+      const ok = /^[0-9+().\s-]{8,20}$/.test(raw) && (raw.replace(/\D/g,'').length >= 8);
+      return ok;
+    }
+
+    function shipIsValid(showErrors){
+      const f = getShipForm();
+      if(!f) return false;
+      const d = shipFormData();
+      const phoneErr = document.getElementById('ship-phone-error');
+
+      const okPhone = validatePhone(d.telefono);
+      if(phoneErr){
+        phoneErr.style.display = (!okPhone && showErrors) ? 'inline' : 'none';
+      }
+
+      const ok =
+        d.nome.length > 0 &&
+        d.cognome.length > 0 &&
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email) &&
+        okPhone &&
+        d.indirizzo.length > 0;
+
+      return ok;
+    }
+
+    function setPayEnabled(enabled){
+      const pp = document.getElementById('pay-paypal');
+      const sp = document.getElementById('pay-satispay');
+      if(pp) pp.disabled = !enabled;
+      if(sp) sp.disabled = !enabled;
+    }
+
+    function renderOrderSummary(){
+      const f = getShipForm();
+      if(!f) return;
+
+      const {lines, subtotal, discount, shipping, total} = computeTotals();
+
+      // Lista prodotti
+      const ul = document.getElementById('order-items-list');
+      if(ul){
+        ul.innerHTML = '';
+        lines.forEach(l=>{
+          const li = document.createElement('li');
+          li.textContent = `${l.name} — Q.tà ${l.qty} — ${fmtEuro(l.subtotal)}`;
+          ul.appendChild(li);
+        });
+      }
+
+      // Totali nel box spedizione
+      const ss = document.getElementById('ship-subtot');
+      const sd = document.getElementById('ship-sconto');
+      const sp = document.getElementById('ship-sped');
+      const st = document.getElementById('ship-totale');
+      if(ss) ss.textContent = fmtEuro(subtotal);
+      if(sd) sd.textContent = '− ' + fmtEuro(discount);
+      if(sp) sp.textContent = shipping ? fmtEuro(shipping) : 'Gratis';
+      if(st) st.textContent = fmtEuro(total);
+
+      // Hidden fields: JSON + testo (leggibile via email)
+      const ship = shipFormData();
+      const summaryJson = {
+        customer: ship,
+        cart: {
+          lines: lines.map(l=>({name:l.name, qty:l.qty, price:l.price, subtotal:l.subtotal})),
+          subtotal, discount, shipping, total
+        },
+        meta: { ts: new Date().toISOString(), ua: navigator.userAgent }
+      };
+      const summaryText =
+        [
+          '=== DATI CLIENTE ===',
+          `Nome: ${ship.nome}`,
+          `Cognome: ${ship.cognome}`,
+          `Email: ${ship.email}`,
+          `Cellulare: ${ship.telefono}`,
+          `Indirizzo: ${ship.indirizzo}`,
+          '',
+          '=== RIEPILOGO PRODOTTI ===',
+          ...lines.map(l=>`- ${l.name} | Q.tà ${l.qty} | ${fmtEuro(l.subtotal)}`),
+          '',
+          `Subtotale: ${fmtEuro(subtotal)}`,
+          `Sconto: − ${fmtEuro(discount)}`,
+          `Spedizione: ${shipping ? fmtEuro(shipping) : 'Gratis'}`,
+          `Totale: ${fmtEuro(total)}`
+        ].join('\n');
+
+      const hj = document.getElementById('order-summary-json');
+      const ht = document.getElementById('order-summary-text');
+      if(hj) hj.value = JSON.stringify(summaryJson);
+      if(ht) ht.value = summaryText;
+    }
+
+    function bindShippingForm(){
+      const f = getShipForm();
+      if(!f) return;
+
+      restoreShipForm();
+      renderOrderSummary();
+      setPayEnabled(shipIsValid(false));
+
+      f.addEventListener('input', ()=>{
+        const d = shipFormData();
+        saveShip(d);
+        renderOrderSummary();
+        setPayEnabled(shipIsValid(false));
+      });
+    }
+
+    async function sendOrderEmailIfPossible(){
+      const f = getShipForm();
+      const status = document.getElementById('ship-status');
+      if(!f) return true;
+
+      if(!shipIsValid(true)){
+        if(status) status.textContent = 'Compila tutti i campi obbligatori per continuare.';
+        return false;
+      }
+
+      // aggiorna hidden fields prima dell'invio
+      renderOrderSummary();
+
+      if(status) status.textContent = 'Invio riepilogo ordine…';
+      try{
+        const res = await fetch(f.action, {
+          method: 'POST',
+          body: new FormData(f),
+          headers: { 'Accept': 'application/json' }
+        });
+        if(res.ok){
+          if(status) status.textContent = 'Dati salvati. Puoi procedere al pagamento.';
+          return true;
+        }else{
+          if(status) status.textContent = 'Invio non riuscito. Riprova o contatta Dania.';
+          return false;
+        }
+      }catch(err){
+        if(status) status.textContent = 'Errore di rete durante l’invio. Riprova.';
+        return false;
+      }
+    }
+// PayPal checkout (carrello multi-riga)
+    
+    document.getElementById('pay-paypal').addEventListener('click', async ()=>{
+      const ok = await sendOrderEmailIfPossible();
+      if(!ok) return;
+
       const {lines, discount, shipping, coupon} = computeTotals();
       if(!lines.length) return;
       const f = document.createElement('form');
@@ -933,7 +1139,11 @@ let cart = loadCart();
     });
 
     // Satispay checkout (mostra QR + totale)
-    document.getElementById('pay-satispay').addEventListener('click', ()=>{
+    
+    document.getElementById('pay-satispay').addEventListener('click', async ()=>{
+      const ok = await sendOrderEmailIfPossible();
+      if(!ok) return;
+
       const {lines, total} = computeTotals();
       if(!lines.length) return;
       const descr = lines.map(l=>`${l.name} x${l.qty}`).join(' • ');
@@ -951,6 +1161,7 @@ let cart = loadCart();
     // Init
     renderProducts();
     renderCart();
+    bindShippingForm();
 
 // === Personalizza: datalist + validazione + invio con redirect ===
 (function () {
