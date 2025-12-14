@@ -1067,79 +1067,56 @@
       const status = document.getElementById('ship-status');
       if(!f) return true;
 
-      if(!shipIsValid(true)){
-        if(status) status.textContent = 'Compila tutti i campi obbligatori per continuare.';
+      // valida e aggiorna riepilogo/hiddens
+      const ok = shipIsValid(true);
+      if(!ok){
+        if(status) status.textContent = 'Compila correttamente i dati per la spedizione per inviare l’ordine.';
         return false;
       }
 
-    // Conferma ordine: invia email (tramite Formspree) con riepilogo + dati spedizione
-    const confirmBtn = document.getElementById('confirm-order');
-    if(confirmBtn){
-      confirmBtn.addEventListener('click', async ()=>{
-        const msg = document.getElementById('order-confirm-msg');
-        const formOk = shipIsValid(true);
-        if(!formOk){
-          if(msg) msg.textContent = 'Completa i dati richiesti per procedere.';
-          // Scroll al form per aiutare l’utente
-          const f = document.getElementById('shipping-form');
-          if(f) f.scrollIntoView({behavior:'smooth', block:'start'});
-          return;
-        }
-        if(msg) msg.textContent = 'Invio richiesta in corso…';
-        confirmBtn.disabled = true;
+      // aggiorna riepilogo (lista prodotti + dati cliente) nei campi hidden
+      try { renderOrderSummary(); } catch(_) {}
 
-        const ok = await sendOrderEmailIfPossible();
-        if(ok){
-          if(msg) msg.textContent = 'Richiesta inviata! Riceverai una email di riepilogo. L’ordine verrà confermato dopo il pagamento.';
-          // opzionale: scroll al messaggio
-          if(msg) msg.scrollIntoView({behavior:'smooth', block:'center'});
-        } else {
-          if(msg) msg.textContent = 'Invio non riuscito. Riprova oppure contattaci via email/WhatsApp.';
-          confirmBtn.disabled = false;
-        }
-      });
-    }
+      if(status) status.textContent = 'Invio ordine…';
 
-      // aggiorna hidden fields prima dell'invio
-      renderOrderSummary();
-
-      if(status) status.textContent = 'Invio riepilogo ordine…';
       try{
         const res = await fetch(f.action, {
           method: 'POST',
           body: new FormData(f),
           headers: { 'Accept': 'application/json' }
         });
+
         if(res.ok){
-          if(status) status.textContent = 'Dati salvati. Puoi procedere al pagamento.';
+          if(status) status.textContent = 'Ordine inviato! Riceverai una conferma dopo il pagamento.';
           return true;
         }else{
-          if(status) status.textContent = 'Invio non riuscito. Riprova o contatta Dania.';
+          if(status) status.textContent = 'Invio non riuscito. Riprova oppure contattaci.';
           return false;
         }
       }catch(err){
-        if(status) status.textContent = 'Errore di rete durante l’invio. Riprova.';
+        if(status) status.textContent = 'Errore di rete. Controlla la connessione e riprova.';
         return false;
       }
     }
-// PayPal checkout (carrello multi-riga)
-      // sconto su carrello
-      if(coupon){
-        if(coupon.type==='percent'){
-          const i = document.createElement('input'); i.type='hidden'; i.name='discount_rate_cart'; i.value=String(coupon.value); f.appendChild(i);
-        } else if(coupon.type==='fixed'){
-          const i = document.createElement('input'); i.type='hidden'; i.name='discount_amount_cart'; i.value=discount.toFixed(2); f.appendChild(i);
+
+    // Conferma ordine (invia a Formspree)
+    (function bindConfirmOrder(){
+      const confirmBtn = document.getElementById('confirm-order');
+      if(!confirmBtn) return;
+
+      confirmBtn.addEventListener('click', async ()=>{
+        // extra-guardia: se il bottone è disabilitato, non fare nulla
+        if(confirmBtn.disabled) return;
+
+        const ok = await sendOrderEmailIfPossible();
+        if(ok){
+          // opzionale: svuota carrello dopo invio (commenta se vuoi mantenerlo)
+          // clearCart();
         }
-      }
-      // spedizione come handling_cart
-      if(shipping>0){ const i=document.createElement('input'); i.type='hidden'; i.name='handling_cart'; i.value=shipping.toFixed(2); f.appendChild(i); }
+      });
+    })();
 
-      document.body.appendChild(f);
-      f.submit();
-    });
-
-    // Satispay checkout (mostra QR + totale)
-    // Navigazione
+// Navigazione
     document.getElementById('go-cart').addEventListener('click',()=> setTimeout(renderCart,0));
 
     // Init
