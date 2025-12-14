@@ -774,12 +774,7 @@ function saveCart(){
 }
 
 let cart = loadCart();
-      // Se anche qui fallisce, non bloccare l’app: carrello resta in RAM
-      console.warn('Storage non disponibile: carrello solo in memoria.');
-    }
-
     function findProduct(id){ return products.find(p=>p.id===id); }
-
     function addToCart(id, qty){
       const item = cart.items.find(i=>i.id===id);
       if(item){ item.qty += qty; } else { cart.items.push({id, qty}); }
