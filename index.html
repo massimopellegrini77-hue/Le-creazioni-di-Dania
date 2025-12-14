@@ -120,6 +120,7 @@
     <section id="prodotti" class="section">
       <h2>In vetrina</h2>
       <div class="grid" id="product-grid"></div>
+      <div id="product-error" class="banner" style="display:none;margin-top:16px;color:#c24d3c"></div>
       <div class="banner" style="margin-top:16px">
         💡 <strong>Galleria foto</strong>: ogni articolo può avere più immagini. Clicca le miniatura per vederle. Aggiungi al carrello con la quantità desiderata.
       </div>
@@ -733,6 +734,8 @@
         measures: '20 × 14 cm'
       },
       ];
+    window.products = products;
+
 
     // === RENDER PRODOTTI (con galleria immagini) ===
     const grid = document.getElementById('product-grid');
@@ -1120,9 +1123,22 @@
     document.getElementById('go-cart').addEventListener('click',()=> setTimeout(renderCart,0));
 
     // Init
-    renderProducts();
-    renderCart();
-    bindShippingForm();
+    function initApp(){
+      try { renderProducts(); }
+      catch(err){
+        console.error('Errore renderProducts:', err);
+        const box = document.getElementById('product-error');
+        if(box){ box.style.display='block'; box.textContent = 'Errore nel caricamento prodotti: ' + (err && err.message ? err.message : String(err)); }
+      }
+      try { renderCart(); }
+      catch(err){ console.warn('renderCart KO:', err); }
+    }
+    if(document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+bindShippingForm();
 
 // === Personalizza: datalist + validazione + invio con redirect ===
 (function () {
