@@ -337,6 +337,15 @@
     <button class="btn outline" onclick="closeModal('cookie-modal')">Chiudi</button>
   </dialog>
 
+  <!-- Popup (mobile-friendly) per conferma ordine / errori -->
+  <dialog id="order-popup" style="max-width:560px;width:92%">
+    <h3 id="order-popup-title">Conferma ordine</h3>
+    <p id="order-popup-msg" class="muted" style="margin-top:-6px">…</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+      <button class="btn outline" type="button" onclick="closeModal('order-popup')">Chiudi</button>
+    </div>
+  </dialog>
+
   <dialog id="satispay-modal" style="max-width:560px;width:92%">
     <h3>Paga con Satispay</h3>
     <p class="muted">Scansiona il QR con l'app Satispay oppure apri direttamente l'app. Inserisci l'importo totale mostrato.</p>
@@ -388,6 +397,15 @@
 
     function openModal(id){document.getElementById(id).showModal()} 
     function closeModal(id){document.getElementById(id).close()}
+
+    // Popup helper per feedback su "Conferma ordine" (utile su mobile)
+    function showOrderPopup(message, title){
+      const t = document.getElementById('order-popup-title');
+      const m = document.getElementById('order-popup-msg');
+      if(t) t.textContent = title || 'Conferma ordine';
+      if(m) m.textContent = message || '';
+      try{ openModal('order-popup'); }catch(_){ alert((title? (title+"\n\n"):"") + (message||'')); }
+    }
 
     // === DATI PRODOTTI (multi-foto supporto: images[]) ===
     const products = [
@@ -1068,12 +1086,14 @@
     async function sendOrderEmailIfPossible(){
       const f = getShipForm();
       const status = document.getElementById('ship-status');
+      const confirmBtn = document.getElementById('confirm-order');
       if(!f) return true;
 
       // valida e aggiorna riepilogo/hiddens
       const ok = shipIsValid(true);
       if(!ok){
         if(status) status.textContent = 'Compila correttamente i dati per la spedizione per inviare l’ordine.';
+        showOrderPopup('Controlla i campi obbligatori (Nome, Cognome, Email, Cellulare, Indirizzo) e correggi eventuali errori evidenziati.', 'Dati mancanti');
         return false;
       }
 
@@ -1081,6 +1101,13 @@
       try { renderOrderSummary(); } catch(_) {}
 
       if(status) status.textContent = 'Invio ordine…';
+      showOrderPopup('Invio ordine in corso…', 'Invio');
+
+      // Disabilita il bottone durante l'invio (evita doppi invii)
+      if(confirmBtn){
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Invio in corso…';
+      }
 
       try{
         const res = await fetch(f.action, {
@@ -1091,13 +1118,19 @@
 
         if(res.ok){
           if(status) status.textContent = 'Ordine inviato! Riceverai una conferma dopo il pagamento.';
+          showOrderPopup('Ordine inviato! Riceverai una mail di riepilogo e l’ordine verrà confermato successivamente al pagamento.', 'Ordine inviato');
+          if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = 'Conferma ordine'; }
           return true;
         }else{
           if(status) status.textContent = 'Invio non riuscito. Riprova oppure contattaci.';
+          showOrderPopup('Invio non riuscito. Riprova tra poco oppure contattaci.', 'Errore');
+          if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = 'Conferma ordine'; }
           return false;
         }
       }catch(err){
         if(status) status.textContent = 'Errore di rete. Controlla la connessione e riprova.';
+        showOrderPopup('Errore di rete. Controlla la connessione e riprova.', 'Errore');
+        if(confirmBtn){ confirmBtn.disabled = false; confirmBtn.textContent = 'Conferma ordine'; }
         return false;
       }
     }
@@ -1110,6 +1143,9 @@
       confirmBtn.addEventListener('click', async ()=>{
         // extra-guardia: se il bottone è disabilitato, non fare nulla
         if(confirmBtn.disabled) return;
+
+        // Feedback immediato: su mobile, senza feedback sembra che il click "non funzioni"
+        showOrderPopup('Controllo dati e invio ordine…', 'Conferma ordine');
 
         const ok = await sendOrderEmailIfPossible();
         if(ok){
