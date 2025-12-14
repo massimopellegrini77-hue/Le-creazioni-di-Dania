@@ -726,11 +726,29 @@
     // === CARRELLO (localStorage) ===
     const CART_KEY = 'cart-dania-v1';
     let cart = loadCart();
-
     function loadCart(){
-      try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {items:[], coupon:null}; }catch(e){ return {items:[], coupon:null}; }
-    }
-    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+  try{
+    const raw = localStorage.getItem(CART_KEY);
+    return raw ? JSON.parse(raw) : {items:[], coupon:null};
+  }catch(e){
+    console.warn('localStorage non disponibile, uso carrello in memoria:', e);
+    return {items:[], coupon:null};
+  }
+}
+
+function saveCart(){
+  try{
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }catch(e){
+    console.warn('Impossibile salvare su localStorage (ok, continuo in memoria):', e);
+    // Non bloccare il carrello: resta in RAM finché la pagina è aperta
+  }
+}
+
+    //function loadCart(){
+      //try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {items:[], coupon:null}; }catch(e){ return {items:[], coupon:null}; }
+    //}
+    //function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
 
     function findProduct(id){ return products.find(p=>p.id===id); }
 
