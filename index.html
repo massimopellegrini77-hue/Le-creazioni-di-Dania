@@ -111,6 +111,10 @@
         <img src="logo.jpg"/>
       </div>
     </section>
+  /* Fix mobile: il backdrop intercetta solo quando è aperto */
+#ai-lightbox-backdrop { pointer-events: none; }
+#ai-lightbox-backdrop[open] { pointer-events: auto; }
+
 
     <!-- PRODOTTI -->
     <section id="prodotti" class="section">
