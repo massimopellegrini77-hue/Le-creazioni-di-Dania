@@ -75,6 +75,10 @@
 #ai-lightbox-close{position:absolute;top:-12px;right:-12px;width:36px;height:36px;border-radius:50%;border:none;background:#fff;color:#000;font-size:20px;line-height:36px;cursor:pointer}
 #ai-lightbox-close:focus{outline:2px solid #fff}
 
+/* === FIX MOBILE (proposto): il backdrop intercetta tap solo quando è aperto === */
+#ai-lightbox-backdrop { pointer-events: none; }
+#ai-lightbox-backdrop[open] { pointer-events: auto; }
+
 </style>
 </head>
 <body>
@@ -111,10 +115,6 @@
         <img src="logo.jpg"/>
       </div>
     </section>
-  /* Fix mobile: il backdrop intercetta solo quando è aperto */
-#ai-lightbox-backdrop { pointer-events: none; }
-#ai-lightbox-backdrop[open] { pointer-events: auto; }
-
 
     <!-- PRODOTTI -->
     <section id="prodotti" class="section">
@@ -718,41 +718,30 @@
           });
           thumbs.appendChild(t);
         });
+
         const qty = card.querySelector('.qty');
-        card.querySelector('.add-cart').addEventListener('click',()=>{
+
+        // === MODIFICA PROPOSTA: usa pointerup (mobile-friendly) per "Aggiungi al carrello" ===
+        const btn = card.querySelector('.add-cart');
+        function handleAdd(e){
+          if(e) e.preventDefault();
           const q = Math.max(1, parseInt(qty.value||'1',10));
           addToCart(p.id, q);
-        });
+        }
+        btn.addEventListener('pointerup', handleAdd);
+
         grid.appendChild(card);
       });
     }
 
-    function loadCart(){
-  try{
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : {items:[], coupon:null};
-  }catch(e){
-    console.warn('localStorage non disponibile, uso RAM', e);
-    return {items:[], coupon:null};
-  }
-}
-
-function saveCart(){
-  try{
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  }catch(e){
-    console.warn('localStorage bloccato, continuo senza persistenza', e);
-  }
-}
-
     // === CARRELLO (localStorage) ===
-    //const CART_KEY = 'cart-dania-v1';
-  //  let cart = loadCart();
-  
-    //function loadCart(){
-      //try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {items:[], coupon:null}; }catch(e){ return {items:[], coupon:null}; }
-    //}
-    //function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+    const CART_KEY = 'cart-dania-v1';
+    let cart = loadCart();
+
+    function loadCart(){
+      try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {items:[], coupon:null}; }catch(e){ return {items:[], coupon:null}; }
+    }
+    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
 
     function findProduct(id){ return products.find(p=>p.id===id); }
 
