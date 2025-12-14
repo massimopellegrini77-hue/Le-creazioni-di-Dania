@@ -749,26 +749,30 @@
     }
 
     // === CARRELLO (localStorage) ===
+    let STORAGE_AVAILABLE = true;
     const CART_KEY = 'cart-dania-v1';
     let cart = loadCart();
 
     function loadCart(){
       // Prova prima localStorage, poi sessionStorage (fallback) — robusto su mobile
-      try{
-        const raw = localStorage.getItem(CART_KEY);
-        if(raw) return JSON.parse(raw);
-      }catch(e){}
-      try{
-        const raw = sessionStorage.getItem(CART_KEY);
-        if(raw) return JSON.parse(raw);
-      }catch(e){}
-      return {items:[], coupon:null};
-    }
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.warn('localStorage non leggibile, uso carrello RAM:', e);
+    STORAGE_AVAILABLE = false;
+  }
+  return { items: [], coupon: null };
+}function saveCart(){
+  if (!STORAGE_AVAILABLE) return;
 
-    function saveCart(){
-      const data = JSON.stringify(cart);
-      try{ localStorage.setItem(CART_KEY, data); return; }catch(e){}
-      try{ sessionStorage.setItem(CART_KEY, data); return; }catch(e){}
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  } catch (e) {
+    console.warn('localStorage KO, disabilito persistenza:', e);
+    STORAGE_AVAILABLE = false;
+  }
+}
       // Se anche qui fallisce, non bloccare l’app: carrello resta in RAM
       console.warn('Storage non disponibile: carrello solo in memoria.');
     }
