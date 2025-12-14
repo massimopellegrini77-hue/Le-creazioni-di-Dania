@@ -324,8 +324,13 @@
 
     // --- Cookie notice
     const cn = document.getElementById('cookie-notice');
-    if(!localStorage.getItem('cookie_ok')){cn.style.display='flex'}
-    function acceptCookies(){localStorage.setItem('cookie_ok','1');cn.style.display='none'}
+    let cookieOk=false;
+    try{ cookieOk = !!localStorage.getItem('cookie_ok'); }catch(e){ cookieOk=false; }
+    if(!cookieOk){cn.style.display='flex'}
+    function acceptCookies(){
+      try{ localStorage.setItem('cookie_ok','1'); }catch(e){}
+      cn.style.display='none';
+    }
 
     // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -728,7 +733,16 @@
           const q = Math.max(1, parseInt(qty.value||'1',10));
           addToCart(p.id, q);
         }
-        btn.addEventListener('pointerup', handleAdd);
+        // Mobile: usa pointerup e click con guardia anti-doppio
+        let _lastAddTs = 0;
+        function handleAddGuarded(e){
+          const now = Date.now();
+          if(now - _lastAddTs < 300) return;
+          _lastAddTs = now;
+          handleAdd(e);
+        }
+        btn.addEventListener('pointerup', handleAddGuarded);
+        btn.addEventListener('click', handleAddGuarded);
 
         grid.appendChild(card);
       });
@@ -739,32 +753,57 @@
     let cart = loadCart();
 
     function loadCart(){
-      try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {items:[], coupon:null}; }catch(e){ return {items:[], coupon:null}; }
+      // Prova prima localStorage, poi sessionStorage (fallback) — robusto su mobile
+      try{
+        const raw = localStorage.getItem(CART_KEY);
+        if(raw) return JSON.parse(raw);
+      }catch(e){}
+      try{
+        const raw = sessionStorage.getItem(CART_KEY);
+        if(raw) return JSON.parse(raw);
+      }catch(e){}
+      return {items:[], coupon:null};
     }
-    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+
+    function saveCart(){
+      const data = JSON.stringify(cart);
+      try{ localStorage.setItem(CART_KEY, data); return; }catch(e){}
+      try{ sessionStorage.setItem(CART_KEY, data); return; }catch(e){}
+      // Se anche qui fallisce, non bloccare l’app: carrello resta in RAM
+      console.warn('Storage non disponibile: carrello solo in memoria.');
+    }
 
     function findProduct(id){ return products.find(p=>p.id===id); }
 
     function addToCart(id, qty){
       const item = cart.items.find(i=>i.id===id);
       if(item){ item.qty += qty; } else { cart.items.push({id, qty}); }
-      saveCart();
+      // Non far fallire tutto se lo storage dà problemi (tipico su mobile)
+      try{ saveCart(); }catch(e){ console.warn('saveCart fallita', e); }
       renderCart();
       flashCart();
     }
 
     function removeFromCart(id){
       cart.items = cart.items.filter(i=>i.id!==id);
-      saveCart();
+      try{ saveCart(); }catch(e){}
       renderCart();
     }
 
     function updateQty(id, qty){
       const it = cart.items.find(i=>i.id===id);
-      if(it){ it.qty = Math.max(1, qty|0); saveCart(); renderCart(); }
+      if(it){
+        it.qty = Math.max(1, qty|0);
+        try{ saveCart(); }catch(e){}
+        renderCart();
+      }
     }
 
-    function clearCart(){ cart = {items:[], coupon:null}; saveCart(); renderCart(); }
+    function clearCart(){
+      cart = {items:[], coupon:null};
+      try{ saveCart(); }catch(e){}
+      renderCart();
+    }
 
     function fmtEuro(n){ return '€ ' + n.toFixed(2).replace('.',','); }
 
@@ -846,8 +885,8 @@
         const code = (document.getElementById('coupon-input').value||'').trim();
         const msg = document.getElementById('coupon-msg');
         const found = COUPONS.find(c=>c.code.toUpperCase()===code.toUpperCase());
-        if(found){ cart.coupon = code; saveCart(); msg.textContent = `Coupon applicato: ${found.type==='percent'? ('−'+found.value+'%'): ('−€ '+found.value)}`; renderCart(); }
-        else { msg.textContent = 'Codice non valido.'; cart.coupon=null; saveCart(); renderCart(); }
+        if(found){ cart.coupon = code; try{ saveCart(); }catch(e){} msg.textContent = `Coupon applicato: ${found.type==='percent'? ('−'+found.value+'%'): ('−€ '+found.value)}`; renderCart(); }
+        else { msg.textContent = 'Codice non valido.'; cart.coupon=null; try{ saveCart(); }catch(e){} renderCart(); }
       }
     });
 
